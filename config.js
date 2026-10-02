@@ -17,8 +17,8 @@
    en local et le mode en ligne s'affiche comme indisponible.
    ==================================================================== */
 
-const SUPABASE_URL      = "";   // ex. "https://abcdefghijkl.supabase.co"
-const SUPABASE_ANON_KEY = "";   // ex. "eyJhbGciOiJIUzI1NiIsInR5cCI6..."
+const SUPABASE_URL      = "https://vbgstrulgrawctjscpso.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_U6AsfUT4rRSeukNLmw56Qw_L9w6vf9v";
 
 const EN_LIGNE_PRET = Boolean(SUPABASE_URL && SUPABASE_ANON_KEY);
 

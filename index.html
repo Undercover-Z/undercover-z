@@ -148,6 +148,20 @@ button,input{font:inherit;color:inherit}
 .btn-ghost:hover{background:var(--yellow)}
 .fine{margin:10px 0 0;font-size:12px;color:var(--muted);text-align:center}
 
+/* messages de connexion */
+.message{margin:0 0 16px;padding:11px 13px;border:3px solid var(--red);border-radius:10px;background:#fff1f1;
+  font-size:14px;font-weight:700;line-height:1.4;color:#9b1118}
+.message.ok{border-color:#15764a;background:#eefaf2;color:#0f5a37}
+.message.info{border-color:var(--blue);background:#eef4ff;color:#13306e}
+
+/* bloc "deja connecte" */
+.connecte{text-align:center;padding:4px 0 2px}
+.connecte-qui{margin:0 0 14px;font-size:16px;font-weight:700}
+.connecte-qui b{font:400 26px/1 var(--f-title);letter-spacing:.03em;display:block;margin-top:4px;color:var(--blue)}
+.lien-nu{display:block;margin:12px auto 0;border:0;background:none;color:var(--blue);font-weight:700;font-size:13px;
+  text-decoration:underline;cursor:pointer;padding:4px}
+.btn-ki[disabled]{filter:grayscale(.8);opacity:.6;cursor:progress}
+
 /* ---------- Comment on joue ---------- */
 .h-big{margin:0 0 26px;font:400 clamp(40px,5vw,56px)/1 var(--f-title);letter-spacing:.03em;color:#fff;text-wrap:balance;
   -webkit-text-stroke:9px var(--ink);paint-order:stroke fill;text-shadow:6px 7px 0 var(--ink);transform:rotate(-2deg);transform-origin:left}
@@ -279,14 +293,23 @@ button,input{font:inherit;color:inherit}
     <section class="panel auth" aria-label="Connexion ou inscription">
       <div class="sticker"><span>Entrée du tournoi</span></div>
 
-      <div class="tabs" role="tablist">
+      <!-- quand on est deja connecte -->
+      <div class="connecte" id="connecte" hidden>
+        <p class="connecte-qui">Connecté en tant que <b id="moi-pseudo">…</b></p>
+        <button class="btn-ki" type="button" id="aller-jouer"><span>Jouer !</span></button>
+        <button class="lien-nu" type="button" id="deconnexion">Changer de compte</button>
+      </div>
+
+      <div class="tabs" role="tablist" id="tabs">
         <button class="tab" role="tab" id="tab-login" aria-selected="true" aria-controls="form-login" type="button"><span>Connexion</span></button>
         <button class="tab" role="tab" id="tab-signup" aria-selected="false" aria-controls="form-signup" type="button"><span>Inscription</span></button>
       </div>
 
+      <p class="message" id="auth-msg" role="alert" hidden></p>
+
       <form id="form-login" class="form" role="tabpanel" aria-labelledby="tab-login" novalidate>
-        <label class="field" for="login-id"><span>Identifiant</span>
-          <input class="input" id="login-id" name="login" autocomplete="username" placeholder="Pseudo ou e-mail">
+        <label class="field" for="login-id"><span>E-mail</span>
+          <input class="input" id="login-id" name="login" type="email" autocomplete="email" placeholder="toi@exemple.fr">
         </label>
         <label class="field" for="login-pw"><span>Mot de passe</span>
           <input class="input" id="login-pw" type="password" autocomplete="current-password" placeholder="••••••••">
@@ -395,6 +418,9 @@ button,input{font:inherit;color:inherit}
   </aside>
 </main>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<script src="sb.js"></script>
 <script>
 /* Boules à étoiles décoratives */
 const STARS={1:[[50,54]],2:[[40,44],[60,64]],3:[[50,37],[36,62],[64,62]],4:[[37,39],[63,39],[37,64],[63,64]],
@@ -453,16 +479,81 @@ document.querySelectorAll("[name=aura]").forEach(r=>r.addEventListener("change",
   document.getElementById("form-signup").style.setProperty("--aura",r.value);
 }));
 
-/* Maquette : on passe à la page suivante sans rien envoyer */
-document.querySelectorAll("form").forEach(f=>f.addEventListener("submit",e=>{
-  e.preventDefault();
-  const idField=f.querySelector("[name=pseudo]")||f.querySelector("[name=login]");
-  const pseudo=(idField.value.split("@")[0].trim())||"Guerrier_Z";
-  const aura=(f.querySelector("[name=aura]:checked")||{}).value||"#ffd21f";
-  try{sessionStorage.setItem("uz-user",JSON.stringify({pseudo,aura}))}catch(_){}
+/* ---------- Comptes (Supabase) ---------- */
+const $=s=>document.querySelector(s);
+const msg=$("#auth-msg");
+function message(txt,type){
+  if(!txt){ msg.hidden=true; return; }
+  msg.textContent=txt;
+  msg.className="message"+(type?" "+type:"");
+  msg.hidden=false;
+}
+function retenir(moi){
+  try{ sessionStorage.setItem("uz-user",JSON.stringify({pseudo:moi.pseudo,aura:moi.aura})); }catch(_){}
+}
+function partir(ou){
   document.body.classList.add("warp");
-  setTimeout(()=>location.href="setup.html",430);
-}));
+  setTimeout(()=>location.href=ou,430);
+}
+
+async function afficherSession(){
+  const moi = Compte.pret() ? await Compte.moi() : null;
+  const connecte=!!moi;
+  $("#connecte").hidden=!connecte;
+  $("#tabs").hidden=connecte;
+  $("#form-login").hidden=connecte||$("#tab-login").getAttribute("aria-selected")!=="true";
+  $("#form-signup").hidden=connecte||$("#tab-signup").getAttribute("aria-selected")!=="true";
+  if(moi){ $("#moi-pseudo").textContent=moi.pseudo; retenir(moi); }
+  if(!Compte.pret()) message("Le mode en ligne n'est pas configuré sur ce site : seules les parties en local sont possibles.","info");
+  return moi;
+}
+
+$("#aller-jouer").addEventListener("click",()=>partir("setup.html"));
+$("#deconnexion").addEventListener("click",async()=>{
+  await Compte.deconnecter();
+  message("Tu es déconnecté.","info");
+  afficherSession();
+});
+
+/* connexion */
+$("#form-login").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const bouton=e.target.querySelector(".btn-ki");
+  const mail=$("#login-id").value.trim(), mdp=$("#login-pw").value;
+  if(!mail||!mdp) return message("Remplis ton e-mail et ton mot de passe.");
+  bouton.disabled=true; message("Connexion…","info");
+  const r=await Compte.connecter({mail,mdp});
+  bouton.disabled=false;
+  if(!r.ok) return message(r.erreur);
+  retenir(r.moi);
+  message("Bienvenue, "+r.moi.pseudo+" !","ok");
+  partir("setup.html");
+});
+
+/* inscription */
+$("#form-signup").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const bouton=e.target.querySelector(".btn-ki");
+  const pseudo=$("#su-pseudo").value.trim();
+  const mail=$("#su-mail").value.trim();
+  const mdp=$("#pw").value, mdp2=$("#su-pw2").value;
+  const aura=($("[name=aura]:checked")||{}).value||"#ff8a00";
+  if(!pseudo) return message("Choisis un pseudo : c'est lui que les autres joueurs verront.");
+  if(!mail) return message("Il faut une adresse e-mail pour créer un compte.");
+  if(mdp.length<6) return message("Le mot de passe doit faire au moins 6 caractères.");
+  if(mdp!==mdp2) return message("Les deux mots de passe ne sont pas identiques.");
+  if(!$("#su-rules").checked) return message("Il faut accepter les règles du tournoi.");
+  bouton.disabled=true; message("Création du compte…","info");
+  const r=await Compte.inscrire({mail,mdp,pseudo,aura});
+  bouton.disabled=false;
+  if(!r.ok) return message(r.erreur);
+  if(r.aConfirmer) return message(r.message,"info");
+  retenir(r.moi);
+  message("Compte créé. À toi de jouer, "+r.moi.pseudo+" !","ok");
+  partir("setup.html");
+});
+
+afficherSession();
 </script>
 </body>
 </html>

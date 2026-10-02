@@ -150,7 +150,17 @@ create policy "l hote lit les actions" on actions
 create index if not exists actions_salon_id on actions (salon, id);
 
 
--- 6 · TEMPS REEL -----------------------------------------------------
+-- 6 · DROITS D'ACCES DE L'API ----------------------------------------
+-- Ces GRANT rendent le schema utilisable par supabase-js meme si l'option
+-- "Automatically expose new tables" est decochee dans les reglages du projet.
+-- Ils n'ouvrent rien : c'est RLS, au-dessus, qui decide ligne par ligne.
+grant usage on schema public to anon, authenticated;
+grant select, insert, update, delete on
+  profils, salons, joueurs_salon, cartes, actions to authenticated;
+grant usage, select on sequence actions_id_seq to authenticated;
+
+
+-- 7 · TEMPS REEL -----------------------------------------------------
 -- sans ca, personne n'est prevenu des changements
 do $$ begin
   alter publication supabase_realtime add table salons;
@@ -165,7 +175,7 @@ do $$ begin
 exception when duplicate_object then null; end $$;
 
 
--- 7 · MENAGE ---------------------------------------------------------
+-- 8 · MENAGE ---------------------------------------------------------
 -- a appeler de temps en temps (ou via un cron Supabase) :
 --   select menage_salons();
 create or replace function public.menage_salons() returns void
