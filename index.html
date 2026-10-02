@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Undercover Z</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bangers&family=Dela+Gothic+One&family=Rubik:wght@400;500;700;900&display=swap">
+<style>
+:root{
+  --ink:#141014;
+  --paper:#fffdf5;
+  --orange:#ff7a00;
+  --yellow:#ffd21f;
+  --red:#e3262e;
+  --blue:#1d4fb8;
+  --sky:#3fa9ff;
+  --scouter:#6dff7a;
+  --muted:#5a4f55;
+  --f-title:"Bangers","Impact","Arial Black",sans-serif;
+  --f-jp:"Dela Gothic One","Yu Gothic UI","Meiryo",sans-serif;
+  --f-body:"Rubik",system-ui,"Segoe UI",sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{font-family:var(--f-body);color:var(--ink);background:#ff8a00;min-height:100vh;overflow-x:hidden}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:3px dashed var(--blue);outline-offset:3px}
+
+/* ---------- Fond : explosion de ki ---------- */
+.bg{position:fixed;inset:0;z-index:-1;overflow:hidden;
+  background:radial-gradient(circle at 50% 22%, #fffbd6 0 5%, #ffe14a 16%, #ffa114 40%, #f25a00 68%, #9e2300 100%)}
+.bg .rays{position:absolute;left:50%;top:22%;width:260vmax;height:260vmax;transform:translate(-50%,-50%);
+  background:repeating-conic-gradient(from 0deg, rgba(255,255,255,.3) 0deg 1.4deg, transparent 1.4deg 6deg);
+  animation:spin 160s linear infinite}
+.bg::after{content:"";position:absolute;inset:0;
+  background-image:radial-gradient(rgba(70,12,0,.3) 1.1px, transparent 1.6px);background-size:7px 7px;
+  -webkit-mask-image:radial-gradient(circle at 50% 22%, transparent 30%, #000 85%);
+  mask-image:radial-gradient(circle at 50% 22%, transparent 30%, #000 85%)}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+
+.mock-flag{position:fixed;top:18px;right:-46px;z-index:40;transform:rotate(38deg);background:var(--ink);color:var(--yellow);
+  font:700 11px/1 var(--f-body);letter-spacing:.2em;text-transform:uppercase;padding:7px 54px;box-shadow:0 3px 0 rgba(0,0,0,.25)}
+
+.wrap{max-width:1140px;margin:0 auto;padding:12px 20px 64px}
+
+/* ---------- Logo ---------- */
+.hero{position:relative;text-align:center}
+.logo{position:relative;z-index:1;display:block;width:min(740px,100%);height:auto;margin:0 auto;overflow:visible}
+.logo text{font-family:var(--f-title)}
+.logo .t{font-size:124px;letter-spacing:3px;fill:url(#gTitle);stroke:#2b0b00;stroke-width:13px;paint-order:stroke;stroke-linejoin:round}
+.logo .z{font-size:250px;fill:url(#gZ);stroke:#2b0b00;stroke-width:12px;paint-order:stroke;stroke-linejoin:round}
+.logo .sh{fill:#2b0b00;stroke:#2b0b00}
+
+.ribbon{position:relative;z-index:2;display:inline-flex;align-items:center;gap:14px;margin-top:-6px;padding:10px 26px;
+  background:var(--ink);color:#fff;transform:skewX(-12deg) rotate(-2deg);box-shadow:0 0 0 3px #fff,0 0 0 6px var(--ink),8px 8px 0 6px rgba(40,8,0,.3)}
+.ribbon > *{transform:skewX(12deg)}
+.ribbon .fr{font:700 clamp(11px,2.3vw,15px)/1 var(--f-body);letter-spacing:.16em;text-transform:uppercase}
+.ribbon .jp{font:400 clamp(14px,2.8vw,20px)/1 var(--f-jp);color:var(--yellow)}
+
+.orb{position:absolute;z-index:0;width:var(--s);aspect-ratio:1;filter:drop-shadow(4px 7px 0 rgba(40,8,0,.35));
+  animation:float 6s ease-in-out infinite;animation-delay:var(--d,0s)}
+.orb svg{display:block;width:100%;height:100%}
+.o1{--s:84px;left:3%;top:14%;--d:-1s}
+.o2{--s:56px;right:8%;top:2%;--d:-3s}
+.o3{--s:92px;right:1%;top:48%;--d:-2s}
+.o4{--s:50px;left:11%;top:66%;--d:-4s}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-14px) rotate(6deg)}}
+
+/* ---------- Grille principale ---------- */
+.grid{display:grid;grid-template-columns:minmax(0,430px) minmax(0,1fr);gap:44px;align-items:start;margin-top:46px}
+
+.panel{position:relative;isolation:isolate;background:var(--paper);border:5px solid var(--ink);border-radius:6px;box-shadow:10px 10px 0 var(--ink)}
+
+/* ---------- Carte connexion ---------- */
+.auth{padding:42px 26px 24px}
+.sticker{position:absolute;top:-24px;left:20px;background:var(--red);color:#fff;font:400 24px/1 var(--f-title);letter-spacing:.06em;
+  padding:9px 16px 6px;border:4px solid var(--ink);transform:rotate(-4deg);box-shadow:4px 4px 0 var(--ink)}
+.sticker span{-webkit-text-stroke:5px var(--ink);paint-order:stroke fill}
+
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px}
+.tab{font:400 24px/1 var(--f-title);letter-spacing:.06em;padding:12px 8px 9px;border:4px solid var(--ink);background:#fff;
+  border-radius:10px;cursor:pointer;position:relative;top:0;transition:top .12s, background .12s}
+.tab:hover{top:-2px}
+.tab[aria-selected="true"]{background:var(--blue);color:#fff;box-shadow:inset 0 -6px 0 rgba(0,0,0,.28);top:-3px}
+.tab[aria-selected="true"] span{-webkit-text-stroke:5px var(--ink);paint-order:stroke fill}
+
+.form{display:grid;gap:16px}
+.field{display:grid;gap:7px;text-align:left}
+.field > span,.aura-set legend{font:700 12px/1 var(--f-body);letter-spacing:.14em;text-transform:uppercase}
+.input{width:100%;font-size:16px;font-weight:500;padding:13px 14px;border:3px solid var(--ink);border-radius:10px;background:#fff;
+  box-shadow:inset 3px 3px 0 rgba(20,16,20,.08);outline:none;transition:box-shadow .15s,border-color .15s}
+.input::placeholder{color:#9a8f94}
+.input:focus{border-color:var(--orange);box-shadow:0 0 0 4px rgba(255,122,0,.3), inset 3px 3px 0 rgba(20,16,20,.06)}
+
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font-size:14px}
+.check{display:inline-flex;align-items:center;gap:8px;font-size:14px;cursor:pointer}
+.check input{width:18px;height:18px;margin:0;accent-color:var(--orange)}
+.link{color:var(--blue);font-weight:700}
+
+/* Scouter : force du mot de passe */
+.scouter{position:relative;overflow:hidden;margin-top:-6px;padding:10px 14px 12px;background:#0b2a12;color:var(--scouter);
+  border:3px solid var(--ink);border-radius:10px 34px 10px 10px}
+.scouter::before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg, rgba(109,255,122,.07) 0 2px, transparent 2px 4px)}
+.scouter-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+.scouter-val{margin-top:6px;font:400 30px/1 var(--f-title);letter-spacing:.04em;font-variant-numeric:tabular-nums;text-shadow:0 0 10px rgba(109,255,122,.7)}
+.scouter-bar{height:8px;margin-top:8px;background:rgba(109,255,122,.15);border-radius:4px;overflow:hidden}
+.scouter-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#2ecc40,#b6ff3a,#ffe14a,#ff4d2e);transition:width .25s}
+.scouter.over{animation:shake .12s linear 4}
+.scouter.over .scouter-rank{color:#ffe14a}
+@keyframes shake{25%{transform:translate(-3px,1px)}50%{transform:translate(3px,-1px)}75%{transform:translate(-2px,-1px)}}
+
+.aura-set{border:0;padding:0;margin:0;display:grid;gap:10px}
+.aura-set legend{padding:0;margin-bottom:10px}
+.auras{display:flex;gap:12px;flex-wrap:wrap}
+.aura{position:relative}
+.aura input{position:absolute;opacity:0;inset:0;margin:0}
+.aura span{display:block;width:44px;height:44px;border-radius:50%;border:3px solid var(--ink);cursor:pointer;transition:transform .15s,box-shadow .15s;
+  background:radial-gradient(circle at 50% 62%, #fff 0 16%, var(--c) 46%, color-mix(in srgb, var(--c), #000 40%) 100%)}
+.aura input:checked + span{transform:scale(1.12);box-shadow:0 0 0 3px #fff,0 0 0 6px var(--ink),0 0 20px 8px var(--c)}
+.aura input:focus-visible + span{outline:3px dashed var(--blue);outline-offset:8px}
+.aura-name{margin:0;font-size:13px;color:var(--muted)}
+.aura-name b{color:var(--ink)}
+
+/* Bouton aura */
+.btn-ki{position:relative;top:0;display:block;width:100%;margin-top:6px;padding:15px 18px 11px;border:4px solid var(--ink);border-radius:14px;cursor:pointer;
+  background:linear-gradient(180deg,#ffb23d 0%,#ff7a00 55%,#e24f00 100%);box-shadow:0 7px 0 var(--ink);
+  font:400 32px/1 var(--f-title);letter-spacing:.06em;color:#fff;transition:top .08s, box-shadow .08s}
+.btn-ki span{position:relative;-webkit-text-stroke:6px var(--ink);paint-order:stroke fill}
+.btn-ki::before{content:"";position:absolute;inset:-18px -12px;border-radius:32px;z-index:-1;
+  background:radial-gradient(closest-side, var(--aura,#ffe14a), color-mix(in srgb, var(--aura,#ffe14a) 45%, transparent) 60%, transparent);
+  filter:blur(8px);animation:aura 1.1s ease-in-out infinite alternate}
+.btn-ki:hover{top:-2px;box-shadow:0 9px 0 var(--ink)}
+.btn-ki:active{top:5px;box-shadow:0 2px 0 var(--ink)}
+@keyframes aura{from{transform:scale(.95,.88);opacity:.55}to{transform:scale(1.04,1.12);opacity:1}}
+
+.or{display:flex;align-items:center;gap:12px;margin:22px 0 14px;font:400 20px/1 var(--f-title);letter-spacing:.12em}
+.or::before,.or::after{content:"";flex:1;height:4px;background:var(--ink);border-radius:2px}
+.btn-ghost{display:block;text-align:center;font-weight:700;font-size:15px;color:var(--ink);text-decoration:none;padding:12px;
+  border:3px dashed var(--ink);border-radius:10px;background:#fff;transition:background .15s}
+.btn-ghost:hover{background:var(--yellow)}
+.fine{margin:10px 0 0;font-size:12px;color:var(--muted);text-align:center}
+
+/* ---------- Comment on joue ---------- */
+.h-big{margin:0 0 26px;font:400 clamp(40px,5vw,56px)/1 var(--f-title);letter-spacing:.03em;color:#fff;text-wrap:balance;
+  -webkit-text-stroke:9px var(--ink);paint-order:stroke fill;text-shadow:6px 7px 0 var(--ink);transform:rotate(-2deg);transform-origin:left}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:20px}
+.step{display:grid;grid-template-columns:78px 1fr;gap:18px;align-items:center;padding:16px 22px 16px 14px;box-shadow:7px 7px 0 var(--ink)}
+.step:nth-child(odd){transform:rotate(.7deg)}
+.step:nth-child(even){transform:rotate(-.7deg);margin-left:18px}
+.step h3{margin:0 0 5px;font:400 27px/1 var(--f-title);letter-spacing:.03em}
+.step p{margin:0;font-size:15px;line-height:1.45;max-width:52ch}
+.sfx{position:absolute;right:12px;top:-18px;font:400 24px/1 var(--f-jp);color:var(--yellow);-webkit-text-stroke:6px var(--ink);paint-order:stroke fill;transform:rotate(8deg)}
+
+.burst{position:relative;isolation:isolate;display:grid;place-items:center;width:78px;height:78px}
+.burst::before,.burst::after{content:"";position:absolute;inset:0;z-index:-1;
+  clip-path:polygon(100% 50%,82.8% 58.8%,93.3% 75%,74% 74%,75% 93.3%,58.8% 82.8%,50% 100%,41.2% 82.8%,25% 93.3%,26% 74%,6.7% 75%,17.2% 58.8%,0% 50%,17.2% 41.2%,6.7% 25%,26% 26%,25% 6.7%,41.2% 17.2%,50% 0%,58.8% 17.2%,75% 6.7%,74% 26%,93.3% 25%,82.8% 41.2%)}
+.burst::before{background:var(--ink);transform:scale(1.16)}
+.burst::after{background:var(--yellow)}
+.burst b{font:400 42px/1 var(--f-title);color:var(--red);-webkit-text-stroke:5px var(--ink);paint-order:stroke fill;font-weight:400}
+
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:30px}
+.mode{overflow:hidden;box-shadow:7px 7px 0 var(--ink);display:flex;flex-direction:column}
+.mode-head{margin:0;font:400 23px/1 var(--f-title);letter-spacing:.06em;color:#fff;padding:11px 14px 8px;border-bottom:4px solid var(--ink)}
+.mode-head span{-webkit-text-stroke:5px var(--ink);paint-order:stroke fill}
+.mode-head.voice{background:var(--blue)}
+.mode-head.draw{background:var(--red)}
+.mode-body{flex:1;padding:16px 14px 14px;display:flex;flex-direction:column;justify-content:space-between;gap:12px}
+.mode-cap{margin:0;font-size:13px;line-height:1.45;color:var(--muted)}
+.mode-cap b{color:var(--ink)}
+
+.bubble{position:relative;margin:4px 4px 18px;background:#fff;border:3px solid var(--ink);border-radius:40px;padding:16px 14px;
+  font-weight:700;font-size:15px;line-height:1.35;text-align:center}
+.bubble::before{content:"";position:absolute;left:30px;bottom:-19px;border-left:11px solid transparent;border-right:11px solid transparent;border-top:18px solid var(--ink)}
+.bubble::after{content:"";position:absolute;left:34px;bottom:-12px;border-left:7px solid transparent;border-right:7px solid transparent;border-top:12px solid #fff}
+
+.onestroke{display:block;width:100%;height:auto;background:#fff;border:3px solid var(--ink);border-radius:8px}
+.onestroke path{fill:none;stroke:#000;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;animation:ink 4.5s ease-in-out infinite}
+@keyframes ink{0%{stroke-dashoffset:1}55%,100%{stroke-dashoffset:0}}
+
+/* ---------- Emplacement publicitaire ----------
+   La zone réserve sa hauteur (aucun décalage quand la pub charge), elle est
+   toujours étiquetée « Publicité », et jamais pendant une partie. */
+.pub{display:block;width:100%;max-width:760px;margin:52px auto 0}
+.pub-tag{display:block;margin-bottom:6px;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ink)}
+.pub-zone{display:grid;place-items:center;min-height:104px;padding:8px;border:3px dashed rgba(20,16,20,.6);border-radius:12px;background:rgba(255,255,255,.4)}
+.pub-zone > *{max-width:100%}
+.pub-zone:empty::after{content:"Emplacement libre · bannière 728 × 90 (320 × 100 sur mobile)";padding:0 12px;font-size:12px;font-weight:700;color:#4a3b2f;text-align:center}
+@media (min-width:760px){.pub-zone{min-height:94px}}
+
+/* ---------- Transition ---------- */
+.warp::after{content:"";position:fixed;inset:0;z-index:100;background:#fff;animation:flash .45s ease-in forwards}
+@keyframes flash{from{opacity:0}to{opacity:1}}
+
+/* ---------- Responsive ---------- */
+@media (max-width:880px){
+  .grid{grid-template-columns:1fr;gap:56px}
+  .auth{max-width:520px;width:100%;margin:0 auto}
+}
+@media (max-width:760px){
+  .o3,.o4{display:none}
+  .o1{--s:50px;top:2%;left:0}
+  .o2{--s:40px;right:2%}
+}
+@media (max-width:520px){
+  .modes{grid-template-columns:1fr}
+  .step{grid-template-columns:60px 1fr;gap:14px}
+  .step:nth-child(even){margin-left:0}
+  .burst{width:60px;height:60px}
+  .burst b{font-size:34px}
+  .auth{padding:40px 18px 20px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .onestroke path{stroke-dashoffset:0!important}
+}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"><div class="rays"></div></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <radialGradient id="gOrb" cx=".38" cy=".32" r=".78">
+      <stop offset="0" stop-color="#fff6d6"/>
+      <stop offset=".18" stop-color="#ffc24d"/>
+      <stop offset=".55" stop-color="#ff8f0a"/>
+      <stop offset=".85" stop-color="#d95a00"/>
+      <stop offset="1" stop-color="#8f3300"/>
+    </radialGradient>
+  </defs>
+</svg>
+
+<div class="mock-flag">Maquette</div>
+
+<main class="wrap">
+  <header class="hero">
+    <span class="orb o1" data-orb="4"></span>
+    <span class="orb o2" data-orb="1"></span>
+    <span class="orb o3" data-orb="7"></span>
+    <span class="orb o4" data-orb="2"></span>
+
+    <svg class="logo" viewBox="0 0 820 320" role="img" aria-labelledby="logoTitle">
+      <title id="logoTitle">Undercover Z</title>
+      <defs>
+        <linearGradient id="gTitle" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#fff7a8"/>
+          <stop offset=".45" stop-color="#ffd21f"/>
+          <stop offset="1" stop-color="#ff7a00"/>
+        </linearGradient>
+        <linearGradient id="gZ" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#ff9a90"/>
+          <stop offset=".3" stop-color="#e3262e"/>
+          <stop offset=".55" stop-color="#8f0d15"/>
+          <stop offset=".72" stop-color="#e3262e"/>
+          <stop offset="1" stop-color="#6d0a0f"/>
+        </linearGradient>
+        <path id="arc" d="M 60 222 Q 410 30 760 222"/>
+      </defs>
+      <text class="z sh" x="418" y="304" text-anchor="middle">Z</text>
+      <text class="z" x="410" y="296" text-anchor="middle">Z</text>
+      <text class="t sh" transform="translate(6 8)"><textPath href="#arc" startOffset="50%" text-anchor="middle">UNDERCOVER</textPath></text>
+      <text class="t"><textPath href="#arc" startOffset="50%" text-anchor="middle">UNDERCOVER</textPath></text>
+    </svg>
+
+    <div class="ribbon">
+      <span class="fr">Le jeu de l'intrus · édition manga</span>
+      <span class="jp" lang="ja">正体を隠せ！</span>
+    </div>
+  </header>
+
+  <div class="grid">
+    <!-- ===== Connexion / inscription ===== -->
+    <section class="panel auth" aria-label="Connexion ou inscription">
+      <div class="sticker"><span>Entrée du tournoi</span></div>
+
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" id="tab-login" aria-selected="true" aria-controls="form-login" type="button"><span>Connexion</span></button>
+        <button class="tab" role="tab" id="tab-signup" aria-selected="false" aria-controls="form-signup" type="button"><span>Inscription</span></button>
+      </div>
+
+      <form id="form-login" class="form" role="tabpanel" aria-labelledby="tab-login" novalidate>
+        <label class="field" for="login-id"><span>Identifiant</span>
+          <input class="input" id="login-id" name="login" autocomplete="username" placeholder="Pseudo ou e-mail">
+        </label>
+        <label class="field" for="login-pw"><span>Mot de passe</span>
+          <input class="input" id="login-pw" type="password" autocomplete="current-password" placeholder="••••••••">
+        </label>
+        <div class="row">
+          <label class="check" for="remember"><input type="checkbox" id="remember" checked> Rester connecté</label>
+          <a href="#" class="link">Mot de passe oublié ?</a>
+        </div>
+        <button class="btn-ki" type="submit"><span>Se connecter !</span></button>
+      </form>
+
+      <form id="form-signup" class="form" role="tabpanel" aria-labelledby="tab-signup" novalidate hidden>
+        <label class="field" for="su-pseudo"><span>Pseudo de guerrier</span>
+          <input class="input" id="su-pseudo" name="pseudo" autocomplete="nickname" maxlength="16" placeholder="ex. Ninja_Ramen">
+        </label>
+        <label class="field" for="su-mail"><span>E-mail</span>
+          <input class="input" id="su-mail" type="email" autocomplete="email" placeholder="toi@exemple.fr">
+        </label>
+        <label class="field" for="pw"><span>Mot de passe</span>
+          <input class="input" id="pw" type="password" autocomplete="new-password" placeholder="8 caractères minimum">
+        </label>
+        <div class="scouter" id="scouter" aria-live="polite">
+          <div class="scouter-top"><span>Niveau de puissance</span><span class="scouter-rank" id="rank">En attente…</span></div>
+          <div class="scouter-val" id="pwVal">0</div>
+          <div class="scouter-bar"><i id="pwBar"></i></div>
+        </div>
+        <label class="field" for="su-pw2"><span>Confirmation</span>
+          <input class="input" id="su-pw2" type="password" autocomplete="new-password" placeholder="Répète ton mot de passe">
+        </label>
+        <fieldset class="aura-set">
+          <legend>Couleur de ton aura</legend>
+          <div class="auras">
+            <label class="aura" style="--c:#ff8a00" title="Flamme"><input type="radio" id="aura-1" name="aura" value="#ff8a00" data-name="Flamme" checked><span></span></label>
+            <label class="aura" style="--c:#ffd21f" title="Doré"><input type="radio" id="aura-2" name="aura" value="#ffd21f" data-name="Doré"><span></span></label>
+            <label class="aura" style="--c:#35b6ff" title="Céleste"><input type="radio" id="aura-3" name="aura" value="#35b6ff" data-name="Céleste"><span></span></label>
+            <label class="aura" style="--c:#9b4dff" title="Destruction"><input type="radio" id="aura-4" name="aura" value="#9b4dff" data-name="Destruction"><span></span></label>
+            <label class="aura" style="--c:#3ddc5a" title="Légende"><input type="radio" id="aura-5" name="aura" value="#3ddc5a" data-name="Légende"><span></span></label>
+          </div>
+          <p class="aura-name">Aura choisie : <b id="auraName">Flamme</b></p>
+        </fieldset>
+        <label class="check" for="su-rules"><input type="checkbox" id="su-rules"> J'accepte les règles du tournoi</label>
+        <button class="btn-ki" type="submit"><span>Créer mon compte !</span></button>
+      </form>
+
+      <div class="or"><span>ou</span></div>
+      <a class="btn-ghost" href="setup.html?local=1">Jouer en local sans compte →</a>
+      <p class="fine">Un compte est nécessaire pour les parties en ligne.</p>
+    </section>
+
+    <!-- ===== Comment on joue ===== -->
+    <section class="howto" aria-labelledby="howtoTitle">
+      <h2 id="howtoTitle" class="h-big">Comment on joue ?</h2>
+      <ol class="steps">
+        <li class="panel step">
+          <div class="burst" aria-hidden="true"><b>1</b></div>
+          <div>
+            <h3>Reçois ton mot secret</h3>
+            <p>Les civils partagent le même mot. L'undercover en reçoit un <em>presque</em> pareil… sans savoir qu'il est l'intrus. Et Mr. White ? Lui n'a <strong>aucun mot</strong> : il doit bluffer.</p>
+          </div>
+          <span class="sfx" lang="ja" aria-hidden="true">ゴゴゴ</span>
+        </li>
+        <li class="panel step">
+          <div class="burst" aria-hidden="true"><b>2</b></div>
+          <div>
+            <h3>Décris-le… ou dessine-le</h3>
+            <p>Chacun son tour, donne un indice à voix haute — ou ajoute <strong>un seul trait</strong> au dessin commun.</p>
+          </div>
+          <span class="sfx" lang="ja" aria-hidden="true">ドン!</span>
+        </li>
+        <li class="panel step">
+          <div class="burst" aria-hidden="true"><b>3</b></div>
+          <div>
+            <h3>Votez, démasquez !</h3>
+            <p>À la fin du tour, on vote pour éliminer un suspect. Les civils gagnent s'ils éliminent tous les intrus — mais un Mr. White éliminé peut encore voler la victoire en devinant le mot.</p>
+          </div>
+          <span class="sfx" lang="ja" aria-hidden="true">バーン!</span>
+        </li>
+      </ol>
+
+      <div class="modes">
+        <article class="panel mode">
+          <h3 class="mode-head voice"><span>Mode voix haute</span></h3>
+          <div class="mode-body">
+            <div class="bubble">« Ça se mange avec des baguettes… »</div>
+            <p class="mode-cap">Civils : <b>Ramen</b> · Undercover : <b>Udon</b> · Mr. White : <b>???</b></p>
+          </div>
+        </article>
+        <article class="panel mode">
+          <h3 class="mode-head draw"><span>Mode dessin</span></h3>
+          <div class="mode-body">
+            <svg class="onestroke" viewBox="0 0 200 120" role="img" aria-label="Un chat dessiné d'un seul trait continu">
+              <path pathLength="1" d="M34 84 L66 88 Q56 62 60 30 L86 52 Q100 46 114 52 L140 30 Q144 62 134 88 L166 84 L136 96 Q100 118 64 96"/>
+            </svg>
+            <p class="mode-cap">Un chat en <b>un seul trait</b>. Les yeux ? Trop tard, t'as lâché !</p>
+          </div>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <!-- Pub : en bas de l'accueil, jamais dans une partie. Le code de la régie
+       (AdSense, etc.) s'insère dans .pub-zone, rien d'autre à changer. -->
+  <aside class="pub" data-pub="accueil-bas" aria-label="Publicité">
+    <span class="pub-tag">Publicité</span>
+    <div class="pub-zone" id="pub-accueil-bas"></div>
+  </aside>
+</main>
+
+<script>
+/* Boules à étoiles décoratives */
+const STARS={1:[[50,54]],2:[[40,44],[60,64]],3:[[50,37],[36,62],[64,62]],4:[[37,39],[63,39],[37,64],[63,64]],
+  5:[[50,32],[33,47],[67,47],[40,69],[60,69]],6:[[37,33],[63,33],[29,53],[71,53],[40,73],[60,73]],
+  7:[[50,28],[32,41],[68,41],[50,52],[32,64],[68,64],[50,77]]};
+function starPath(cx,cy,r){
+  let d="";
+  for(let i=0;i<10;i++){
+    const a=-Math.PI/2+i*Math.PI/5, rr=i%2?r*.42:r;
+    d+=(i?"L":"M")+(cx+rr*Math.cos(a)).toFixed(1)+" "+(cy+rr*Math.sin(a)).toFixed(1);
+  }
+  return d+"Z";
+}
+function orbSVG(n){
+  const r=n<=2?13:n<=4?10:8;
+  const stars=STARS[n].map(([x,y])=>`<path d="${starPath(x,y,r)}" fill="#e3262e" stroke="#7a0a0a" stroke-width="1.2"/>`).join("");
+  return `<svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="46" fill="url(#gOrb)" stroke="#3a1500" stroke-width="4"/>${stars}<ellipse cx="34" cy="27" rx="13" ry="6.5" fill="#fff" opacity=".75" transform="rotate(-30 34 27)"/></svg>`;
+}
+document.querySelectorAll("[data-orb]").forEach(el=>el.innerHTML=orbSVG(+el.dataset.orb));
+
+/* Onglets connexion / inscription */
+const tabs=[...document.querySelectorAll(".tab")];
+tabs.forEach(t=>t.addEventListener("click",()=>{
+  tabs.forEach(o=>{
+    const on=o===t;
+    o.setAttribute("aria-selected",on);
+    document.getElementById(o.getAttribute("aria-controls")).hidden=!on;
+  });
+}));
+
+/* Scouter : niveau de puissance du mot de passe */
+const pw=document.getElementById("pw"), scouter=document.getElementById("scouter");
+const pwVal=document.getElementById("pwVal"), pwBar=document.getElementById("pwBar"), rank=document.getElementById("rank");
+function power(s){
+  if(!s) return 0;
+  let v=s.length*420;
+  if(/[a-z]/.test(s)) v+=600;
+  if(/[A-Z]/.test(s)) v+=1200;
+  if(/\d/.test(s)) v+=1200;
+  if(/[^\w]/.test(s)) v+=2000;
+  if(s.length>=12) v+=2000;
+  return v;
+}
+pw.addEventListener("input",()=>{
+  const v=power(pw.value);
+  pwVal.textContent=v.toLocaleString("fr-FR");
+  pwBar.style.width=Math.min(v/12000,1)*100+"%";
+  rank.textContent=v>9000?"Plus de 9 000 !!":v>=6000?"Élite":v>=3000?"Guerrier":v>0?"Humain ordinaire":"En attente…";
+  scouter.classList.toggle("over",v>9000);
+});
+
+/* Aura */
+const auraName=document.getElementById("auraName");
+document.querySelectorAll("[name=aura]").forEach(r=>r.addEventListener("change",()=>{
+  auraName.textContent=r.dataset.name;
+  document.getElementById("form-signup").style.setProperty("--aura",r.value);
+}));
+
+/* Maquette : on passe à la page suivante sans rien envoyer */
+document.querySelectorAll("form").forEach(f=>f.addEventListener("submit",e=>{
+  e.preventDefault();
+  const idField=f.querySelector("[name=pseudo]")||f.querySelector("[name=login]");
+  const pseudo=(idField.value.split("@")[0].trim())||"Guerrier_Z";
+  const aura=(f.querySelector("[name=aura]:checked")||{}).value||"#ffd21f";
+  try{sessionStorage.setItem("uz-user",JSON.stringify({pseudo,aura}))}catch(_){}
+  document.body.classList.add("warp");
+  setTimeout(()=>location.href="setup.html",430);
+}));
+</script>
+</body>
+</html>

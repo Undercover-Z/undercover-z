@@ -1,0 +1,706 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Undercover Z — Partie</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bangers&family=Dela+Gothic+One&family=Rubik:wght@400;500;700;900&display=swap">
+<style>
+:root{
+  --ink:#141014;
+  --paper:#fffdf5;
+  --orange:#ff7a00;
+  --yellow:#ffd21f;
+  --red:#e3262e;
+  --blue:#1d4fb8;
+  --sky:#3fa9ff;
+  --scouter:#6dff7a;
+  --muted:#5a4f55;
+  --burst:polygon(100% 50%,82.8% 58.8%,93.3% 75%,74% 74%,75% 93.3%,58.8% 82.8%,50% 100%,41.2% 82.8%,25% 93.3%,26% 74%,6.7% 75%,17.2% 58.8%,0% 50%,17.2% 41.2%,6.7% 25%,26% 26%,25% 6.7%,41.2% 17.2%,50% 0%,58.8% 17.2%,75% 6.7%,74% 26%,93.3% 25%,82.8% 41.2%);
+  --f-title:"Bangers","Impact","Arial Black",sans-serif;
+  --f-jp:"Dela Gothic One","Yu Gothic UI","Meiryo",sans-serif;
+  --f-body:"Rubik",system-ui,"Segoe UI",sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{font-family:var(--f-body);color:var(--ink);background:#143f9e;min-height:100vh;overflow-x:hidden}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:3px dashed var(--yellow);outline-offset:3px}
+
+/* ---------- Fond ---------- */
+.bg{position:fixed;inset:0;z-index:-1;overflow:hidden;
+  background:radial-gradient(ellipse at 50% -8%, #dff5ff 0 5%, #72c9ff 20%, #2a78e0 46%, #143f9e 72%, #0a1f5c 100%)}
+.bg .rays{position:absolute;left:50%;top:-8%;width:260vmax;height:260vmax;transform:translate(-50%,-50%);
+  background:repeating-conic-gradient(from 0deg, rgba(255,255,255,.15) 0deg 1.2deg, transparent 1.2deg 6deg);
+  animation:spin 200s linear infinite}
+.bg::after{content:"";position:absolute;inset:0;
+  background-image:radial-gradient(rgba(5,15,50,.35) 1.1px, transparent 1.6px);background-size:7px 7px;
+  -webkit-mask-image:linear-gradient(180deg, transparent 20%, #000 90%);mask-image:linear-gradient(180deg, transparent 20%, #000 90%)}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+
+/* ---------- Barre du haut ---------- */
+.topbar{position:sticky;top:0;z-index:30;background:var(--ink);color:#fff;border-bottom:5px solid var(--orange)}
+.topbar-in{max-width:900px;margin:0 auto;padding:10px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px 18px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none}
+.emblem{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:#fff;color:var(--ink);font:400 20px/1 var(--f-jp);border:3px solid var(--orange)}
+.brand-name{font:400 25px/1 var(--f-title);letter-spacing:.05em;color:var(--yellow)}
+.brand-name b{font-weight:400;color:var(--red);-webkit-text-stroke:4px #fff;paint-order:stroke fill;font-size:28px}
+.infos{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;font-weight:700}
+.tag{padding:5px 10px;border-radius:20px;background:rgba(255,255,255,.14);border:2px solid rgba(255,255,255,.5)}
+.tag.manche{background:var(--yellow);color:var(--ink);border-color:var(--ink)}
+.quitter{color:#fff;font-weight:700;font-size:12px;text-decoration:none;border:2px solid #fff;border-radius:8px;padding:6px 9px}
+.quitter:hover{background:#fff;color:var(--ink)}
+
+.wrap{max-width:900px;margin:0 auto;padding:26px 18px 70px}
+.panel{position:relative;isolation:isolate;background:var(--paper);border:5px solid var(--ink);border-radius:6px;box-shadow:10px 10px 0 var(--ink)}
+.ecran{padding:34px 24px 26px;text-align:center}
+.ecran h1{margin:0 0 6px;font:400 clamp(34px,6vw,54px)/1 var(--f-title);letter-spacing:.03em;text-wrap:balance}
+.ecran h2{margin:0 0 14px;font:400 clamp(26px,4.4vw,36px)/1.05 var(--f-title);letter-spacing:.03em;text-wrap:balance}
+.ecran p{margin:0 auto 14px;max-width:52ch;font-size:16px;line-height:1.5}
+.ecran .petit{font-size:13px;color:var(--muted)}
+.jp{font:400 17px/1 var(--f-jp);letter-spacing:.2em;color:var(--muted)}
+
+/* ---------- Boutons ---------- */
+.btn-ki{position:relative;top:0;display:inline-block;margin-top:8px;padding:15px 28px 11px;border:4px solid var(--ink);border-radius:14px;cursor:pointer;
+  background:linear-gradient(180deg,#ffb23d 0%,#ff7a00 55%,#e24f00 100%);box-shadow:0 7px 0 var(--ink);
+  font:400 30px/1 var(--f-title);letter-spacing:.06em;color:#fff;transition:top .08s, box-shadow .08s}
+.btn-ki span{position:relative;-webkit-text-stroke:6px var(--ink);paint-order:stroke fill}
+.btn-ki::before{content:"";position:absolute;inset:-18px -12px;border-radius:32px;z-index:-1;
+  background:radial-gradient(closest-side,#ffe14a,rgba(255,170,0,.5) 60%,transparent);filter:blur(8px);animation:aura 1.1s ease-in-out infinite alternate}
+.btn-ki:hover{top:-2px;box-shadow:0 9px 0 var(--ink)}
+.btn-ki:active{top:5px;box-shadow:0 2px 0 var(--ink)}
+.btn-ki:disabled{cursor:not-allowed;top:0;filter:grayscale(.85);opacity:.55}
+.btn-ki:disabled::before{display:none}
+@keyframes aura{from{transform:scale(.95,.88);opacity:.55}to{transform:scale(1.04,1.12);opacity:1}}
+.btn2{margin:10px 6px 0;padding:11px 16px;border:3px solid var(--ink);border-radius:10px;background:#fff;font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 4px 0 var(--ink);position:relative;top:0}
+.btn2:active{top:3px;box-shadow:0 1px 0 var(--ink)}
+.btn2:hover{background:var(--yellow)}
+.btn2.danger:hover{background:#ffd9d9}
+.actions{margin-top:10px}
+
+/* ---------- Saisie des joueurs ---------- */
+.noms{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:18px 0 6px;text-align:left}
+.nom-champ{display:flex;align-items:center;gap:10px;padding:8px 10px;border:3px solid var(--ink);border-radius:10px;background:#fff}
+.nom-num{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;font:400 18px/1 var(--f-title)}
+.nom-champ input{flex:1;min-width:0;border:0;outline:none;font-size:15px;font-weight:700;background:transparent}
+
+/* ---------- Passage de l'appareil ---------- */
+.passe-flech{font:400 56px/1 var(--f-title);color:var(--orange);-webkit-text-stroke:6px var(--ink);paint-order:stroke fill;animation:glisse 1.4s ease-in-out infinite alternate}
+@keyframes glisse{from{transform:translateX(-10px)}to{transform:translateX(10px)}}
+.passe-nom{display:inline-block;margin:6px 0 10px;padding:10px 22px 6px;background:var(--ink);color:var(--yellow);font:400 clamp(34px,7vw,52px)/1 var(--f-title);letter-spacing:.04em;border-radius:10px;transform:rotate(-1.5deg)}
+.garde{display:inline-block;margin-top:4px;padding:8px 14px;border:3px dashed var(--red);border-radius:10px;background:#fff3f3;font-weight:700;font-size:14px;color:#9b1118}
+.garde.ouvert{border-color:var(--blue);border-style:solid;background:#eef5ff;color:#13306e}
+
+/* Décompte du vote à main levée */
+.decompte{position:fixed;inset:0;z-index:60;display:grid;place-items:center;background:rgba(10,31,92,.86)}
+.decompte span{font:400 clamp(110px,38vw,280px)/1 var(--f-title);color:var(--yellow);
+  -webkit-text-stroke:12px var(--ink);paint-order:stroke fill;animation:pouf .45s ease-out}
+.decompte span.mot{font-size:clamp(44px,12vw,120px);-webkit-text-stroke:9px var(--ink)}
+@keyframes pouf{from{transform:scale(2.3);opacity:0}to{transform:scale(1);opacity:1}}
+
+/* ---------- Carte perso ---------- */
+.carte{max-width:300px;margin:0 auto 6px;border:5px solid var(--ink);border-radius:16px;overflow:hidden;background:#fff;box-shadow:8px 8px 0 var(--ink)}
+.carte-role{padding:10px 12px 8px;font:400 26px/1 var(--f-title);letter-spacing:.06em;color:#fff;border-bottom:5px solid var(--ink);-webkit-text-stroke:5px var(--ink);paint-order:stroke fill}
+.carte-role.civil{background:var(--sky)}
+.carte-role.undercover{background:var(--red)}
+.carte-role.mrwhite{background:#efeced;color:var(--ink);-webkit-text-stroke:0}
+.carte-img{position:relative;aspect-ratio:1;display:grid;place-items:center;background:repeating-linear-gradient(45deg,#f4f1f2 0 9px,#eae6e8 9px 18px)}
+.carte-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.carte-img > svg{width:54%;height:54%;fill:#c7bfc3}
+.carte-img .sans{position:absolute;left:0;right:0;bottom:0;padding:5px 0;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:rgba(20,16,20,.72)}
+.carte-img .vide{font:400 70px/1 var(--f-title);color:#b9b0b6}
+.carte-nom{padding:12px 10px 14px;border-top:5px solid var(--ink)}
+.carte-nom strong{display:block;font:400 32px/1 var(--f-title);letter-spacing:.03em;font-weight:400}
+.carte-nom small{display:block;margin-top:5px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+/* ---------- Ordre de parole ---------- */
+.ordre{display:grid;gap:8px;max-width:420px;margin:18px auto 6px;text-align:left}
+.ordre li{display:flex;align-items:center;gap:12px;padding:10px 12px;border:3px solid var(--ink);border-radius:10px;background:#fff;font-weight:700}
+.ordre li .n{flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#efeced;font:400 17px/1 var(--f-title)}
+.ordre li.actuel{background:var(--yellow);box-shadow:4px 4px 0 var(--ink)}
+.ordre li.actuel .n{background:var(--ink);color:#fff}
+.ordre li.fait{opacity:.5}
+.ordre li .etat{margin-left:auto;font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+
+/* ---------- Dessin ---------- */
+.toile-box{position:relative;max-width:560px;margin:14px auto 0;border:4px solid var(--ink);border-radius:12px;background:#fff;overflow:hidden;box-shadow:6px 6px 0 var(--ink)}
+.toile-box canvas{display:block;width:100%;aspect-ratio:4/3;touch-action:none;cursor:crosshair}
+.toile-box.verrou canvas{cursor:not-allowed}
+.toile-tag{position:absolute;left:10px;top:10px;padding:5px 8px 3px;font:400 17px/1 var(--f-title);letter-spacing:.05em;background:var(--yellow);border:3px solid var(--ink);border-radius:6px;pointer-events:none}
+.toile-hint{position:absolute;inset:auto 0 12px;text-align:center;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#a79ca1;pointer-events:none;transition:opacity .2s}
+.toile-box.touche .toile-hint{opacity:0}
+.toile-stamp{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-12deg) scale(2.2);opacity:0;pointer-events:none;white-space:nowrap;
+  font:400 40px/1 var(--f-title);letter-spacing:.04em;color:var(--red);background:rgba(255,255,255,.86);border:5px solid var(--red);border-radius:10px;padding:8px 14px 4px;
+  transition:transform .28s cubic-bezier(.3,1.6,.5,1), opacity .15s}
+/* le tampon s'efface pour laisser voir le dessin */
+.toile-box.verrou .toile-stamp{animation:tampon 2s cubic-bezier(.3,1.6,.5,1) forwards}
+@keyframes tampon{
+  0%{opacity:0;transform:translate(-50%,-50%) rotate(-12deg) scale(2.2)}
+  18%{opacity:1;transform:translate(-50%,-50%) rotate(-12deg) scale(1)}
+  70%{opacity:1;transform:translate(-50%,-50%) rotate(-12deg) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-50%) rotate(-12deg) scale(1)}
+}
+
+/* ---------- Vote ---------- */
+.grille{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;max-width:620px;margin:18px auto 8px}
+.cible{display:flex;align-items:center;gap:10px;padding:14px 12px;border:4px solid var(--ink);border-radius:12px;background:#fff;cursor:pointer;box-shadow:5px 5px 0 var(--ink);text-align:left;font-weight:700;font-size:16px}
+.cible:hover{background:#fff6db}
+.cible[aria-pressed="true"]{background:var(--red);color:#fff}
+.cible .tok{flex:none;width:34px;height:34px;overflow:visible;fill:var(--sky);stroke:var(--ink);stroke-width:3.5;paint-order:stroke;stroke-linejoin:round}
+.cible[aria-pressed="true"] .tok{fill:#fff}
+.cible:disabled{opacity:.4;cursor:not-allowed;box-shadow:5px 5px 0 var(--ink)}
+
+/* ---------- Révélation / fin ---------- */
+.verdict{display:inline-block;padding:10px 20px 6px;margin-bottom:12px;border:5px solid var(--ink);border-radius:12px;font:400 clamp(30px,5.5vw,44px)/1 var(--f-title);letter-spacing:.04em;color:#fff;transform:rotate(-1.5deg)}
+.verdict.civils{background:var(--sky)}
+.verdict.intrus{background:var(--red)}
+.verdict.neutre{background:#efeced;color:var(--ink)}
+.votes{display:grid;gap:6px;max-width:360px;margin:14px auto;text-align:left;font-size:14px;font-weight:700}
+.votes div{display:flex;justify-content:space-between;gap:10px;padding:8px 12px;border:3px solid var(--ink);border-radius:8px;background:#fff}
+.recap{display:grid;gap:8px;max-width:460px;margin:16px auto 0;text-align:left}
+.recap div{display:flex;align-items:center;gap:10px;padding:10px 12px;border:3px solid var(--ink);border-radius:10px;background:#fff;font-weight:700}
+.recap .role{margin-left:auto;padding:4px 9px;border-radius:20px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#fff}
+.recap .role.civil{background:var(--sky)}
+.recap .role.undercover{background:var(--red)}
+.recap .role.mrwhite{background:#6c6370}
+.recap .mort{text-decoration:line-through;opacity:.6}
+.duo-fin{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:14px 0 4px;font-weight:700}
+.duo-fin span{padding:8px 12px;border:3px solid var(--ink);border-radius:10px;background:#fff}
+.devine{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:14px 0 6px}
+.devine input{width:min(320px,100%);padding:13px 14px;border:3px solid var(--ink);border-radius:10px;background:#fff;font-size:16px;font-weight:700}
+.devine input:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 4px rgba(255,122,0,.3)}
+
+/* ---------- Pub (jamais pendant une manche) ---------- */
+.pub{display:block;width:100%;max-width:760px;margin:40px auto 0}
+.pub-tag{display:block;margin-bottom:6px;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#fff}
+.pub-zone{display:grid;place-items:center;min-height:104px;padding:8px;border:3px dashed rgba(255,255,255,.75);border-radius:12px;background:rgba(255,255,255,.14)}
+.pub-zone:empty::after{content:"Emplacement libre · bannière 728 × 90 (320 × 100 sur mobile)";padding:0 12px;font-size:12px;font-weight:700;color:#fff;text-align:center}
+@media (min-width:760px){.pub-zone{min-height:94px}}
+
+.toast{position:fixed;left:50%;bottom:22px;z-index:50;max-width:calc(100% - 32px);transform:translate(-50%,160%);
+  padding:13px 18px;border:3px solid var(--yellow);border-radius:12px;background:var(--ink);color:#fff;font-weight:700;font-size:14px;
+  transition:transform .3s cubic-bezier(.3,1.6,.5,1)}
+.toast.show{transform:translate(-50%,0)}
+
+@media (max-width:520px){
+  .ecran{padding:26px 14px 20px}
+  .infos .tag.mode{display:none}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"><div class="rays"></div></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="fighter" viewBox="0 0 64 64">
+      <path d="M10 64 C12 52 22 49 32 49 C42 49 52 52 54 64 Z"/>
+      <circle cx="32" cy="36" r="14"/>
+      <path d="M17 34 L6 22 L17 23 L11 9 L24 17 L28 3 L34 15 L44 4 L43 18 L57 11 L49 25 L59 30 L47 33 Q32 22 17 34 Z"/>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="index.html" aria-label="Undercover Z, accueil">
+      <span class="emblem" lang="ja" aria-hidden="true">隠</span>
+      <span class="brand-name">Undercover <b>Z</b></span>
+    </a>
+    <div class="infos">
+      <span class="tag manche" id="tag-manche">Manche 1</span>
+      <span class="tag" id="tag-joueurs">7 joueurs</span>
+      <span class="tag mode" id="tag-mode">Mode dessin</span>
+      <a class="quitter" href="setup.html">Quitter</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- 1 · Qui joue ? -->
+  <section class="panel ecran" id="ecran-joueurs">
+    <p class="jp" lang="ja">参加者</p>
+    <h1>Qui joue ?</h1>
+    <p>Écris les pseudos dans l'ordre où vous êtes assis : l'appareil passera de main en main.</p>
+    <div class="noms" id="noms"></div>
+    <button class="btn-ki" type="button" id="go-joueurs"><span>Distribuer les cartes !</span></button>
+  </section>
+
+  <!-- 2 · Passe l'appareil -->
+  <section class="panel ecran" id="ecran-passe" hidden>
+    <p class="jp" lang="ja">次の人へ</p>
+    <div class="passe-flech" aria-hidden="true">▶ ▶ ▶</div>
+    <h2 id="passe-titre">Passe l'appareil à</h2>
+    <div class="passe-nom" id="passe-nom">Joueur 1</div>
+    <p class="garde" id="passe-garde">Les autres : ne regardez pas l'écran !</p>
+    <div><button class="btn-ki" type="button" id="passe-ok"><span>C'est moi</span></button></div>
+  </section>
+
+  <!-- 3 · Ta carte -->
+  <section class="panel ecran" id="ecran-carte" hidden>
+    <h2 id="carte-titre">Ta carte</h2>
+    <div class="carte">
+      <div class="carte-role" id="carte-role">Civil</div>
+      <div class="carte-img">
+        <img id="carte-img" alt="">
+        <svg viewBox="0 0 64 64" aria-hidden="true" id="carte-silhouette"><use href="#fighter"/></svg>
+        <span class="vide" id="carte-vide" hidden>?</span>
+        <span class="sans" id="carte-sans">Image à ajouter</span>
+      </div>
+      <div class="carte-nom">
+        <strong id="carte-perso">—</strong>
+        <small id="carte-manga">—</small>
+      </div>
+    </div>
+    <p class="petit" id="carte-note">Retiens-le, puis cache l'écran.</p>
+    <div><button class="btn-ki" type="button" id="carte-ok"><span>C'est vu !</span></button></div>
+    <div class="actions"><button class="btn2" type="button" id="carte-change">Je ne connais pas ce perso</button></div>
+  </section>
+
+  <!-- 4 · Tours de parole -->
+  <section class="panel ecran" id="ecran-indices" hidden>
+    <p class="jp" lang="ja">ヒント</p>
+    <h2 id="indices-titre">Un indice chacun, à voix haute</h2>
+    <p>Un seul mot ou une courte phrase sur ton perso. Ni le nom, ni un indice trop évident.</p>
+    <ol class="ordre" id="ordre-liste"></ol>
+    <div><button class="btn-ki" type="button" id="indice-ok"><span>Indice donné</span></button></div>
+  </section>
+
+  <!-- 5 · Dessin -->
+  <section class="panel ecran" id="ecran-dessin" hidden>
+    <p class="jp" lang="ja">一筆</p>
+    <h2 id="dessin-titre">À toi le trait</h2>
+    <p class="petit">Un seul trait, sans lever le doigt. Dès que tu relâches, il est gravé.</p>
+    <div class="toile-box" id="toile-box">
+      <canvas id="toile" aria-label="Dessin commun de la partie"></canvas>
+      <span class="toile-tag" id="toile-tag">Trait de Joueur 1</span>
+      <span class="toile-hint">Trace ton trait</span>
+      <span class="toile-stamp">Trait gravé !</span>
+    </div>
+    <div><button class="btn-ki" type="button" id="dessin-ok" disabled><span>Au suivant</span></button></div>
+  </section>
+
+  <!-- 6 · Vote à main levée -->
+  <section class="panel ecran" id="ecran-vote" hidden>
+    <p class="jp" lang="ja">投票</p>
+    <h2 id="vote-titre">Tout le monde pointe du doigt !</h2>
+    <p class="petit" id="vote-sous">À trois, chacun pointe son suspect du doigt. Tapez ensuite le joueur désigné, puis éliminez-le.</p>
+    <div class="grille" id="vote-grille"></div>
+    <div><button class="btn-ki" type="button" id="vote-ok" disabled><span>Éliminer</span></button></div>
+    <div class="actions">
+      <button class="btn2" type="button" id="vote-decompte">Décompte 3 · 2 · 1</button>
+      <button class="btn2" type="button" id="vote-personne">Personne ce tour-ci</button>
+    </div>
+  </section>
+
+  <!-- 7 · Révélation -->
+  <section class="panel ecran" id="ecran-revelation" hidden>
+    <div class="verdict" id="rev-verdict">Éliminé</div>
+    <h2 id="rev-titre">—</h2>
+    <p id="rev-texte">—</p>
+    <div class="votes" id="rev-votes"></div>
+    <div><button class="btn-ki" type="button" id="rev-ok"><span>Continuer</span></button></div>
+  </section>
+
+  <!-- 8 · Mr. White devine -->
+  <section class="panel ecran" id="ecran-mrwhite" hidden>
+    <div class="verdict neutre">Mr. White démasqué</div>
+    <h2 id="mw-titre">Dernière chance</h2>
+    <p>Mr. White, tu es éliminé — mais si tu devines le perso des civils, les intrus gagnent la partie.</p>
+    <div class="devine">
+      <input id="mw-input" placeholder="Le perso des civils…" autocomplete="off" list="mw-liste">
+      <datalist id="mw-liste"></datalist>
+    </div>
+    <div><button class="btn-ki" type="button" id="mw-ok"><span>Je tente !</span></button></div>
+    <div class="actions"><button class="btn2" type="button" id="mw-passe">Je passe</button></div>
+  </section>
+
+  <!-- 9 · Fin -->
+  <section class="panel ecran" id="ecran-fin" hidden>
+    <div class="verdict" id="fin-verdict">Victoire</div>
+    <h2 id="fin-titre">—</h2>
+    <div class="duo-fin" id="fin-duo"></div>
+    <div class="recap" id="fin-recap"></div>
+    <div><button class="btn-ki" type="button" id="fin-rejouer"><span>Rejouer !</span></button></div>
+    <div class="actions">
+      <button class="btn2" type="button" id="fin-reglages">Changer les réglages</button>
+      <button class="btn2 danger" type="button" id="fin-quitter">Retour à l'accueil</button>
+    </div>
+  </section>
+
+  <!-- Pub : uniquement sur l'écran de fin, jamais pendant une manche -->
+  <aside class="pub" id="pub-fin" aria-label="Publicité" hidden>
+    <span class="pub-tag">Publicité</span>
+    <div class="pub-zone" id="pub-fin-zone"></div>
+  </aside>
+
+</main>
+
+<div class="decompte" id="decompte" hidden aria-hidden="true"><span id="decompte-n">3</span></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="mots.js"></script>
+<script src="jeu.js"></script>
+<script src="partie.js"></script>
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const ROLES={civil:"Civil",undercover:"Undercover",mrwhite:"Mr. White"};
+
+/* ---------- Réglages venant de l'écran de préparation ---------- */
+function chargerReglages(){
+  let r=null;
+  try{ r=JSON.parse(sessionStorage.getItem("uz-partie")||"null"); }catch(_){}
+  if(!r) r={mode:"dessin",players:7,uc:1,mw:1,mangas:Object.keys(BANQUE.mangas),duoType:"multivers",changementPerso:true,tours:2};
+  if(!r.mangas||!r.mangas.length) r.mangas=Object.keys(BANQUE.mangas);
+  if(!r.tours) r.tours=1;
+  return r;
+}
+const reglages=chargerReglages();
+let partie=null, file=[], fileIdx=0, choixVote=null;
+
+/* ---------- Écrans ---------- */
+const ECRANS=["joueurs","passe","carte","indices","dessin","vote","revelation","mrwhite","fin"];
+function ecran(nom){
+  ECRANS.forEach(e=>$("#ecran-"+e).hidden = e!==nom);
+  $("#pub-fin").hidden = nom!=="fin";
+  window.scrollTo({top:0,behavior:"instant"});
+}
+let toastTimer;
+function toast(txt){
+  const t=$("#toast");
+  t.textContent=txt; t.classList.add("show");
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove("show"),2800);
+}
+function majInfos(){
+  const e=partie?partie.etat():null;
+  $("#tag-manche").textContent = !e ? "Préparation"
+    : e.toursParManche>1 ? `Manche ${e.manche} · tour ${e.tour}/${e.toursParManche}`
+    : `Manche ${e.manche}`;
+  $("#tag-joueurs").textContent=`${reglages.players} joueurs`;
+  $("#tag-mode").textContent=reglages.mode==="dessin"?"Mode dessin":"Mode voix haute";
+}
+
+/* ---------- 1 · pseudos ---------- */
+$("#noms").innerHTML=Array.from({length:reglages.players},(_,i)=>
+  `<label class="nom-champ"><span class="nom-num">${i+1}</span>
+     <input id="nom-${i}" value="Joueur ${i+1}" maxlength="14" aria-label="Pseudo du joueur ${i+1}">
+   </label>`).join("");
+majInfos();
+
+$("#go-joueurs").addEventListener("click",()=>{
+  const noms=Array.from({length:reglages.players},(_,i)=>$("#nom-"+i).value.trim()||`Joueur ${i+1}`);
+  partie=creerPartie("local",{
+    joueurs:noms, undercover:reglages.uc, mrwhite:reglages.mw,
+    mode:reglages.mode, mangas:reglages.mangas, duoType:reglages.duoType,
+    changementPerso:reglages.changementPerso, tours:reglages.tours
+  });
+  $("#mw-liste").innerHTML=BANQUE.filtrer({mangas:reglages.mangas,type:reglages.duoType})
+    .map(d=>`<option value="${d.civils.nom}"></option>`).join("");
+  majInfos();
+  lancerDistribution();
+});
+
+/* ---------- 2 · passage de l'appareil ---------- */
+function passerA(nom, apres, titre, secret){
+  const g=$("#passe-garde");
+  if(secret===false){
+    g.className="garde ouvert";
+    g.textContent="Tout le monde peut regarder le dessin.";
+  }else{
+    g.className="garde";
+    g.textContent="Les autres : ne regardez pas l'écran !";
+  }
+  $("#passe-titre").textContent=titre||"Passe l'appareil à";
+  $("#passe-nom").textContent=nom;
+  $("#passe-ok").onclick=apres;
+  $("#passe-ok").querySelector("span").textContent=`C'est moi, ${nom}`;
+  ecran("passe");
+}
+
+/* ---------- 3 · distribution ---------- */
+function lancerDistribution(){
+  file=partie.etat().joueurs.map(j=>j.id); fileIdx=0;
+  prochaineCarte();
+}
+function prochaineCarte(){
+  if(fileIdx>=file.length){
+    /* Jamais le duo à l'écran ici : tout le monde regarde. */
+    toast("Tout le monde a sa carte. Que la manche commence !");
+    partie.envoyer({type:"demarrer"});
+    lancerManche();
+    return;
+  }
+  const id=file[fileIdx];
+  const j=partie.etat().joueurs.find(x=>x.id===id);
+  passerA(j.nom, ()=>afficherCarte(id), "Carte secrète pour");
+}
+function afficherCarte(id){
+  const c=partie.maCarte(id);
+  $("#carte-titre").textContent=`${c.nom}, voilà ta carte`;
+  const role=$("#carte-role");
+  role.className="carte-role "+c.role;
+  role.textContent=ROLES[c.role];
+  const img=$("#carte-img"), sil=$("#carte-silhouette"), vide=$("#carte-vide"), sans=$("#carte-sans");
+  if(c.perso){
+    $("#carte-perso").textContent=c.perso.nom;
+    $("#carte-manga").textContent=c.perso.mangaNom;
+    $("#carte-note").textContent="Retiens-le, puis cache l'écran.";
+    vide.hidden=true; sil.hidden=false; sans.hidden=false;
+    img.hidden=true; img.src=c.perso.photo;
+  }else{
+    $("#carte-perso").textContent="Aucun perso";
+    $("#carte-manga").textContent="à toi de bluffer";
+    $("#carte-note").textContent="Tu n'as aucun perso : écoute les autres, fais comme si, et survis.";
+    img.hidden=true; img.removeAttribute("src");
+    sil.hidden=true; sans.hidden=true; vide.hidden=false;
+  }
+  $("#carte-change").hidden=!partie.etat().changementPerso||!c.perso;
+  $("#carte-ok").onclick=()=>{ partie.envoyer({type:"vu",joueur:id}); fileIdx++; prochaineCarte(); };
+  $("#carte-change").onclick=()=>{
+    partie.envoyer({type:"changerDuo"});
+    toast("Nouveau duo pioché : tout le monde revoit sa carte, les rôles ne changent pas.");
+    lancerDistribution();
+  };
+  ecran("carte");
+}
+$("#carte-img").addEventListener("load",()=>{ $("#carte-img").hidden=false; $("#carte-sans").hidden=true; $("#carte-silhouette").hidden=true; });
+$("#carte-img").addEventListener("error",()=>{ $("#carte-img").hidden=true; $("#carte-sans").hidden=false; $("#carte-silhouette").hidden=false; });
+
+/* ---------- 4 · manche (indices ou dessin) ---------- */
+function lancerManche(){
+  majInfos();
+  const e=partie.etat();
+  if(e.mode==="dessin") tourDessin();
+  else { majOrdre(); ecran("indices"); }
+}
+function majOrdre(){
+  const e=partie.etat();
+  $("#indices-titre").textContent = e.toursParManche>1
+    ? `Tour ${e.tour} sur ${e.toursParManche} : un indice chacun`
+    : "Un indice chacun, à voix haute";
+  $("#ordre-liste").innerHTML=e.ordre.map((id,i)=>{
+    const j=e.joueurs.find(x=>x.id===id);
+    const cls=i===e.tourIdx?"actuel":(i<e.tourIdx?"fait":"");
+    const etat=i===e.tourIdx?"à toi !":(i<e.tourIdx?"fait":"");
+    return `<li class="${cls}"><span class="n">${i+1}</span>${j.nom}<span class="etat">${etat}</span></li>`;
+  }).join("");
+}
+$("#indice-ok").addEventListener("click",()=>{
+  const fini=partie.envoyer({type:"tourSuivant"});
+  if(fini){ lancerVote(); return; }
+  majOrdre(); majInfos();
+});
+
+/* ---------- 5 · dessin : un trait par joueur ---------- */
+const cv=$("#toile"), boite=$("#toile-box"), ctx=cv.getContext("2d");
+let traitEnCours=null, verrou=false, dernier=null;
+function dimensions(){ const r=cv.getBoundingClientRect(); return {w:r.width,h:r.height}; }
+function tailleToile(){
+  const r=cv.getBoundingClientRect(), d=window.devicePixelRatio||1;
+  cv.width=Math.round(r.width*d); cv.height=Math.round(r.height*d);
+  ctx.setTransform(d,0,0,d,0,0);
+  redessiner();
+}
+function redessiner(){
+  const {w,h}=dimensions();
+  ctx.fillStyle="#fff"; ctx.fillRect(0,0,w,h);
+  ctx.strokeStyle="#000"; ctx.lineWidth=4; ctx.lineCap="round"; ctx.lineJoin="round";
+  const trace=pts=>{
+    ctx.beginPath();
+    pts.forEach(([x,y],i)=> i?ctx.lineTo(x*w,y*h):ctx.moveTo(x*w,y*h));
+    if(pts.length===1) ctx.lineTo(pts[0][0]*w+.01,pts[0][1]*h);
+    ctx.stroke();
+  };
+  if(partie) partie.etat().traits.forEach(t=>trace(t.points));
+  if(traitEnCours&&traitEnCours.length) trace(traitEnCours);
+}
+const relatif=e=>{ const r=cv.getBoundingClientRect(); return [(e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height]; };
+cv.addEventListener("pointerdown",e=>{
+  if(verrou) return;
+  traitEnCours=[relatif(e)]; dernier=traitEnCours[0];
+  cv.setPointerCapture(e.pointerId);
+  boite.classList.add("touche");
+  redessiner();
+});
+cv.addEventListener("pointermove",e=>{
+  if(!traitEnCours) return;
+  const {w,h}=dimensions();
+  /* les points intermédiaires quand ils existent, sinon l'événement lui-même */
+  let pts=e.getCoalescedEvents?e.getCoalescedEvents():[];
+  if(!pts.length) pts=[e];
+  ctx.beginPath(); ctx.moveTo(dernier[0]*w,dernier[1]*h);
+  for(const p of pts){ const q=relatif(p); traitEnCours.push(q); ctx.lineTo(q[0]*w,q[1]*h); dernier=q; }
+  ctx.stroke();
+});
+function finTrait(){
+  if(!traitEnCours) return;
+  const j=partie.jeu.joueurActuel();
+  partie.envoyer({type:"trait",joueur:j.id,points:traitEnCours});
+  traitEnCours=null; verrou=true;
+  boite.classList.add("verrou");
+  $("#dessin-ok").disabled=false;
+}
+cv.addEventListener("pointerup",finTrait);
+cv.addEventListener("pointercancel",finTrait);
+window.addEventListener("resize",tailleToile);
+
+function tourDessin(){
+  const e=partie.etat(), j=partie.jeu.joueurActuel();
+  majInfos();
+  passerA(j.nom, ()=>{
+    verrou=false; traitEnCours=null;
+    boite.classList.remove("verrou","touche");
+    $("#dessin-ok").disabled=true;
+    $("#dessin-titre").textContent=`${j.nom}, à toi le trait`;
+    $("#toile-tag").textContent = e.toursParManche>1
+      ? `Trait de ${j.nom} · tour ${e.tour}/${e.toursParManche}`
+      : `Trait de ${j.nom}`;
+    ecran("dessin");
+    tailleToile();
+  }, "Le crayon passe à", false);
+}
+$("#dessin-ok").addEventListener("click",()=>{
+  const fini=partie.envoyer({type:"tourSuivant"});
+  if(fini) lancerVote(); else tourDessin();
+});
+
+/* ---------- 6 · vote à main levée ----------
+   En local, personne ne vote sur l'appareil : le groupe pointe du doigt en
+   même temps, puis on désigne l'éliminé et on confirme. (En ligne, chacun
+   cliquera sur son propre écran au même moment : jeu.js sait déjà compter
+   les voix, c'est l'écran qui changera.) */
+function lancerVote(){
+  const e=partie.etat();
+  choixVote=null;
+  $("#vote-grille").innerHTML=e.joueurs.filter(j=>j.vivant).map(j=>
+    `<button class="cible" type="button" data-cible="${j.id}" aria-pressed="false">
+       <svg class="tok" viewBox="0 0 64 64" aria-hidden="true"><use href="#fighter"/></svg>
+       ${j.nom}</button>`).join("");
+  $$("#vote-grille .cible").forEach(b=>b.addEventListener("click",()=>{
+    choixVote=+b.dataset.cible;
+    $$("#vote-grille .cible").forEach(o=>o.setAttribute("aria-pressed",o===b));
+    $("#vote-ok").disabled=false;
+    $("#vote-ok span").textContent="Éliminer "+b.textContent.trim();
+  }));
+  $("#vote-ok").disabled=true;
+  $("#vote-ok span").textContent="Éliminer";
+  ecran("vote");
+}
+function appliquerElimination(cible){
+  partie.envoyer({type:"eliminer",cible});
+  const e=partie.etat();
+  $("#rev-votes").innerHTML="";
+  if(e.phase==="mrwhite"){
+    $("#mw-titre").textContent=`${e.joueurs.find(j=>j.id===e.elimine).nom} était Mr. White !`;
+    $("#mw-input").value="";
+    ecran("mrwhite");
+    return;
+  }
+  afficherRevelation();
+}
+$("#vote-ok").addEventListener("click",()=>{
+  if(choixVote===null) return;
+  appliquerElimination(choixVote);
+});
+$("#vote-personne").addEventListener("click",()=>appliquerElimination(null));
+
+/* décompte pour lancer le geste collectif */
+$("#vote-decompte").addEventListener("click",()=>{
+  const boite=$("#decompte"), n=$("#decompte-n");
+  const suite=["3","2","1","Pointez !"];
+  let i=0;
+  boite.hidden=false;
+  (function tic(){
+    if(i>=suite.length){ boite.hidden=true; return; }
+    const txt=suite[i++];
+    n.textContent=txt;
+    n.classList.toggle("mot",isNaN(+txt));
+    n.style.animation="none"; void n.offsetWidth; n.style.animation="";
+    setTimeout(tic, i===suite.length?900:700);
+  })();
+});
+
+/* ---------- 7 · révélation ---------- */
+function afficherRevelation(){
+  const e=partie.etat();
+  const v=$("#rev-verdict");
+  if(e.elimine===null){
+    v.className="verdict neutre"; v.textContent="Personne !";
+    $("#rev-titre").textContent="Encore une égalité";
+    $("#rev-texte").textContent="Personne n'est éliminé ce tour-ci. La partie continue.";
+  }else{
+    const j=e.joueurs.find(x=>x.id===e.elimine);
+    const estIntrus=j.role!=="civil";
+    v.className="verdict "+(estIntrus?"civils":"intrus");
+    v.textContent=estIntrus?"Bien joué !":"Raté !";
+    $("#rev-titre").textContent=`${j.nom} était ${ROLES[j.role]}`;
+    if(j.role==="mrwhite"){
+      $("#rev-texte").textContent=e.motDevine===false
+        ? `Mr. White s'est trompé : le perso des civils était ${e.duo.civils.nom}.`
+        : "Mr. White est éliminé.";
+    }else if(estIntrus){
+      $("#rev-texte").textContent=`Son perso : ${e.duo.infiltre.nom} (${e.duo.infiltre.mangaNom}).`;
+    }else{
+      $("#rev-texte").textContent=`C'était un civil : ${e.duo.civils.nom} (${e.duo.civils.mangaNom}). Les intrus respirent.`;
+    }
+  }
+  ecran("revelation");
+}
+$("#rev-ok").addEventListener("click",()=>{
+  const fin=partie.envoyer({type:"continuer"});
+  if(fin) afficherFin(); else lancerManche();
+});
+
+/* ---------- 8 · Mr. White devine ---------- */
+$("#mw-ok").addEventListener("click",()=>{
+  const bon=partie.envoyer({type:"deviner",texte:$("#mw-input").value});
+  if(bon) afficherFin(); else afficherRevelation();
+});
+$("#mw-passe").addEventListener("click",()=>{
+  partie.envoyer({type:"deviner",texte:""});
+  afficherRevelation();
+});
+$("#mw-input").addEventListener("keydown",e=>{ if(e.key==="Enter") $("#mw-ok").click(); });
+
+/* ---------- 9 · fin ---------- */
+function afficherFin(){
+  const e=partie.etat();
+  const civils=e.gagnant==="civils";
+  const v=$("#fin-verdict");
+  v.className="verdict "+(civils?"civils":"intrus");
+  v.textContent=civils?"Les civils gagnent !":"Les intrus gagnent !";
+  const civilsVivants=e.joueurs.filter(j=>j.vivant&&j.role==="civil").length;
+  $("#fin-titre").textContent=e.motDevine
+    ? "Mr. White a deviné le perso des civils sur le fil !"
+    : civils ? "Tous les intrus sont démasqués."
+    : civilsVivants===0 ? "Plus aucun civil en jeu."
+    : "Il ne reste qu'un seul civil : les intrus l'emportent.";
+  $("#fin-duo").innerHTML=
+    `<span>Civils : <b>${e.duo.civils.nom}</b></span>
+     <span>Undercover : <b>${e.duo.infiltre.nom}</b></span>
+     ${e.joueurs.some(j=>j.role==="mrwhite")?"<span>Mr. White : <b>aucun perso</b></span>":""}`;
+  $("#fin-recap").innerHTML=e.joueurs.map(j=>
+    `<div class="${j.vivant?"":"mort"}">
+       <svg class="tok" viewBox="0 0 64 64" aria-hidden="true" style="width:30px;height:30px;fill:${j.role==="civil"?"var(--sky)":j.role==="undercover"?"var(--red)":"#6c6370"};stroke:var(--ink);stroke-width:3.5;paint-order:stroke"><use href="#fighter"/></svg>
+       ${j.nom}<span class="role ${j.role}">${ROLES[j.role]}</span>
+     </div>`).join("");
+  ecran("fin");
+  majInfos();
+}
+$("#fin-rejouer").addEventListener("click",()=>{
+  partie.envoyer({type:"rejouer"});
+  majInfos();
+  lancerDistribution();
+});
+$("#fin-reglages").addEventListener("click",()=>location.href="setup.html");
+$("#fin-quitter").addEventListener("click",()=>location.href="index.html");
+
+ecran("joueurs");
+</script>
+</body>
+</html>

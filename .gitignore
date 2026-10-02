@@ -1,0 +1,11 @@
+# Feuille de route interne : pas besoin qu'elle soit publique sur le site
+guide-mise-en-ligne.html
+
+# Fichiers systeme Windows / macOS
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Cles et configuration locale (a ne JAMAIS envoyer)
+config.js
+.env

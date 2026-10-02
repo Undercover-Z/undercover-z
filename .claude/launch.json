@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "undercover",
+      "runtimeExecutable": "powershell",
+      "runtimeArgs": [
+        "-NoProfile",
+        "-ExecutionPolicy", "Bypass",
+        "-File", "C:\\Users\\Bayandoz\\Desktop\\IGNITIA\\SRC\\.claude\\serve.ps1",
+        "-Root", "C:\\Users\\Bayandoz\\Desktop\\IGNITIA\\SRC",
+        "-Port", "8765"
+      ],
+      "port": 8765
+    }
+  ]
+}
