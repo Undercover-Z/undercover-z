@@ -1,0 +1,17 @@
+{
+  "name": "Undercover Z",
+  "short_name": "Undercover Z",
+  "description": "Le jeu de l'intrus, edition manga : a voix haute ou en dessin au trait unique.",
+  "lang": "fr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#143f9e",
+  "theme_color": "#141014",
+  "icons": [
+    { "src": "icone-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icone-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

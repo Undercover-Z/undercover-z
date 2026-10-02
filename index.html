@@ -4,6 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Undercover Z</title>
+<meta name="description" content="Undercover Z : le jeu de l'intrus en version manga. Trouvez qui n'a pas le même perso, à voix haute ou en dessinant un seul trait.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#141014">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Undercover Z">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bangers&family=Dela+Gothic+One&family=Rubik:wght@400;500;700;900&display=swap">
@@ -41,9 +48,6 @@ button,input{font:inherit;color:inherit}
   mask-image:radial-gradient(circle at 50% 22%, transparent 30%, #000 85%)}
 @keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
 
-.mock-flag{position:fixed;top:18px;right:-46px;z-index:40;transform:rotate(38deg);background:var(--ink);color:var(--yellow);
-  font:700 11px/1 var(--f-body);letter-spacing:.2em;text-transform:uppercase;padding:7px 54px;box-shadow:0 3px 0 rgba(0,0,0,.25)}
-
 .wrap{max-width:1140px;margin:0 auto;padding:12px 20px 64px}
 
 /* ---------- Logo ---------- */
@@ -54,11 +58,12 @@ button,input{font:inherit;color:inherit}
 .logo .z{font-size:250px;fill:url(#gZ);stroke:#2b0b00;stroke-width:12px;paint-order:stroke;stroke-linejoin:round}
 .logo .sh{fill:#2b0b00;stroke:#2b0b00}
 
-.ribbon{position:relative;z-index:2;display:inline-flex;align-items:center;gap:14px;margin-top:-6px;padding:10px 26px;
+.ribbon{position:relative;z-index:2;display:inline-flex;align-items:center;justify-content:center;flex-wrap:wrap;
+  gap:6px 14px;max-width:100%;margin-top:-6px;padding:10px 26px;
   background:var(--ink);color:#fff;transform:skewX(-12deg) rotate(-2deg);box-shadow:0 0 0 3px #fff,0 0 0 6px var(--ink),8px 8px 0 6px rgba(40,8,0,.3)}
 .ribbon > *{transform:skewX(12deg)}
-.ribbon .fr{font:700 clamp(11px,2.3vw,15px)/1 var(--f-body);letter-spacing:.16em;text-transform:uppercase}
-.ribbon .jp{font:400 clamp(14px,2.8vw,20px)/1 var(--f-jp);color:var(--yellow)}
+.ribbon .fr{font:700 clamp(11px,2.3vw,15px)/1 var(--f-body);letter-spacing:.16em;text-transform:uppercase;text-align:center}
+.ribbon .jp{font:400 clamp(14px,2.8vw,20px)/1 var(--f-jp);color:var(--yellow);white-space:nowrap}
 
 .orb{position:absolute;z-index:0;width:var(--s);aspect-ratio:1;filter:drop-shadow(4px 7px 0 rgba(40,8,0,.35));
   animation:float 6s ease-in-out infinite;animation-delay:var(--d,0s)}
@@ -232,8 +237,6 @@ button,input{font:inherit;color:inherit}
     </radialGradient>
   </defs>
 </svg>
-
-<div class="mock-flag">Maquette</div>
 
 <main class="wrap">
   <header class="hero">

@@ -6,6 +6,12 @@ Thumbs.db
 desktop.ini
 .DS_Store
 
-# Cles et configuration locale (a ne JAMAIS envoyer)
-config.js
+# A ne JAMAIS envoyer : les secrets cote serveur
+# (cle service_role de Supabase, identifiants, jetons d'API)
 .env
+secrets.js
+
+# Note sur config.js : il contient l'URL Supabase et la cle "anon",
+# qui sont PUBLIQUES par nature (le navigateur de chaque joueur les
+# telecharge). Il doit donc etre envoye avec le site, sinon le mode en
+# ligne ne marche pas. La securite vient des regles RLS, pas du secret.
