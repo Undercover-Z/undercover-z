@@ -116,11 +116,17 @@ drop policy if exists "je ne vois que ma carte" on cartes;
 create policy "je ne vois que ma carte" on cartes
   for select to authenticated using (auth.uid() = joueur);
 
+-- L'hote distribue et efface, mais ne LIT pas les cartes des autres :
+-- seule la regle du dessus s'applique a la lecture, pour tout le monde.
 drop policy if exists "l hote distribue" on cartes;
 create policy "l hote distribue" on cartes
-  for all to authenticated using (
+  for insert to authenticated with check (
     auth.uid() = (select hote from salons where code = salon)
-  ) with check (
+  );
+
+drop policy if exists "l hote efface les cartes" on cartes;
+create policy "l hote efface les cartes" on cartes
+  for delete to authenticated using (
     auth.uid() = (select hote from salons where code = salon)
   );
 

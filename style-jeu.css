@@ -1,0 +1,238 @@
+/* ====================================================================
+   UNDERCOVER Z — styles des ecrans de jeu
+   Partage par partie.html (local) et enligne.html (en ligne).
+   ==================================================================== */
+:root{
+  --ink:#141014;
+  --paper:#fffdf5;
+  --orange:#ff7a00;
+  --yellow:#ffd21f;
+  --red:#e3262e;
+  --blue:#1d4fb8;
+  --sky:#3fa9ff;
+  --scouter:#6dff7a;
+  --muted:#5a4f55;
+  --burst:polygon(100% 50%,82.8% 58.8%,93.3% 75%,74% 74%,75% 93.3%,58.8% 82.8%,50% 100%,41.2% 82.8%,25% 93.3%,26% 74%,6.7% 75%,17.2% 58.8%,0% 50%,17.2% 41.2%,6.7% 25%,26% 26%,25% 6.7%,41.2% 17.2%,50% 0%,58.8% 17.2%,75% 6.7%,74% 26%,93.3% 25%,82.8% 41.2%);
+  --f-title:"Bangers","Impact","Arial Black",sans-serif;
+  --f-jp:"Dela Gothic One","Yu Gothic UI","Meiryo",sans-serif;
+  --f-body:"Rubik",system-ui,"Segoe UI",sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{font-family:var(--f-body);color:var(--ink);background:#143f9e;min-height:100vh;overflow-x:hidden}
+button,input{font:inherit;color:inherit}
+:focus-visible{outline:3px dashed var(--yellow);outline-offset:3px}
+
+/* ---------- Fond ---------- */
+.bg{position:fixed;inset:0;z-index:-1;overflow:hidden;
+  background:radial-gradient(ellipse at 50% -8%, #dff5ff 0 5%, #72c9ff 20%, #2a78e0 46%, #143f9e 72%, #0a1f5c 100%)}
+.bg .rays{position:absolute;left:50%;top:-8%;width:260vmax;height:260vmax;transform:translate(-50%,-50%);
+  background:repeating-conic-gradient(from 0deg, rgba(255,255,255,.15) 0deg 1.2deg, transparent 1.2deg 6deg);
+  animation:spin 200s linear infinite}
+.bg::after{content:"";position:absolute;inset:0;
+  background-image:radial-gradient(rgba(5,15,50,.35) 1.1px, transparent 1.6px);background-size:7px 7px;
+  -webkit-mask-image:linear-gradient(180deg, transparent 20%, #000 90%);mask-image:linear-gradient(180deg, transparent 20%, #000 90%)}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+
+/* ---------- Barre du haut ---------- */
+.topbar{position:sticky;top:0;z-index:30;background:var(--ink);color:#fff;border-bottom:5px solid var(--orange)}
+.topbar-in{max-width:900px;margin:0 auto;padding:10px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px 18px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none}
+.emblem{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;background:#fff;color:var(--ink);font:400 20px/1 var(--f-jp);border:3px solid var(--orange)}
+.brand-name{font:400 25px/1 var(--f-title);letter-spacing:.05em;color:var(--yellow)}
+.brand-name b{font-weight:400;color:var(--red);-webkit-text-stroke:4px #fff;paint-order:stroke fill;font-size:28px}
+.infos{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;font-weight:700}
+.tag{padding:5px 10px;border-radius:20px;background:rgba(255,255,255,.14);border:2px solid rgba(255,255,255,.5)}
+.tag.manche{background:var(--yellow);color:var(--ink);border-color:var(--ink)}
+.quitter{color:#fff;font-weight:700;font-size:12px;text-decoration:none;border:2px solid #fff;border-radius:8px;padding:6px 9px}
+.quitter:hover{background:#fff;color:var(--ink)}
+
+.wrap{max-width:900px;margin:0 auto;padding:26px 18px 70px}
+.panel{position:relative;isolation:isolate;background:var(--paper);border:5px solid var(--ink);border-radius:6px;box-shadow:10px 10px 0 var(--ink)}
+.ecran{padding:34px 24px 26px;text-align:center}
+.ecran h1{margin:0 0 6px;font:400 clamp(34px,6vw,54px)/1 var(--f-title);letter-spacing:.03em;text-wrap:balance}
+.ecran h2{margin:0 0 14px;font:400 clamp(26px,4.4vw,36px)/1.05 var(--f-title);letter-spacing:.03em;text-wrap:balance}
+.ecran p{margin:0 auto 14px;max-width:52ch;font-size:16px;line-height:1.5}
+.ecran .petit{font-size:13px;color:var(--muted)}
+.jp{font:400 17px/1 var(--f-jp);letter-spacing:.2em;color:var(--muted)}
+
+/* ---------- Boutons ---------- */
+.btn-ki{position:relative;top:0;display:inline-block;margin-top:8px;padding:15px 28px 11px;border:4px solid var(--ink);border-radius:14px;cursor:pointer;
+  background:linear-gradient(180deg,#ffb23d 0%,#ff7a00 55%,#e24f00 100%);box-shadow:0 7px 0 var(--ink);
+  font:400 30px/1 var(--f-title);letter-spacing:.06em;color:#fff;transition:top .08s, box-shadow .08s}
+.btn-ki span{position:relative;-webkit-text-stroke:6px var(--ink);paint-order:stroke fill}
+.btn-ki::before{content:"";position:absolute;inset:-18px -12px;border-radius:32px;z-index:-1;
+  background:radial-gradient(closest-side,#ffe14a,rgba(255,170,0,.5) 60%,transparent);filter:blur(8px);animation:aura 1.1s ease-in-out infinite alternate}
+.btn-ki:hover{top:-2px;box-shadow:0 9px 0 var(--ink)}
+.btn-ki:active{top:5px;box-shadow:0 2px 0 var(--ink)}
+.btn-ki:disabled{cursor:not-allowed;top:0;filter:grayscale(.85);opacity:.55}
+.btn-ki:disabled::before{display:none}
+@keyframes aura{from{transform:scale(.95,.88);opacity:.55}to{transform:scale(1.04,1.12);opacity:1}}
+.btn2{margin:10px 6px 0;padding:11px 16px;border:3px solid var(--ink);border-radius:10px;background:#fff;font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 4px 0 var(--ink);position:relative;top:0}
+.btn2:active{top:3px;box-shadow:0 1px 0 var(--ink)}
+.btn2:hover{background:var(--yellow)}
+.btn2.danger:hover{background:#ffd9d9}
+.actions{margin-top:10px}
+
+/* ---------- Saisie des joueurs ---------- */
+.noms{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:18px 0 6px;text-align:left}
+.nom-champ{display:flex;align-items:center;gap:10px;padding:8px 10px;border:3px solid var(--ink);border-radius:10px;background:#fff}
+.nom-num{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--ink);color:#fff;font:400 18px/1 var(--f-title)}
+.nom-champ input{flex:1;min-width:0;border:0;outline:none;font-size:15px;font-weight:700;background:transparent}
+
+/* ---------- Passage de l'appareil ---------- */
+.passe-flech{font:400 56px/1 var(--f-title);color:var(--orange);-webkit-text-stroke:6px var(--ink);paint-order:stroke fill;animation:glisse 1.4s ease-in-out infinite alternate}
+@keyframes glisse{from{transform:translateX(-10px)}to{transform:translateX(10px)}}
+.passe-nom{display:inline-block;margin:6px 0 10px;padding:10px 22px 6px;background:var(--ink);color:var(--yellow);font:400 clamp(34px,7vw,52px)/1 var(--f-title);letter-spacing:.04em;border-radius:10px;transform:rotate(-1.5deg)}
+.garde{display:inline-block;margin-top:4px;padding:8px 14px;border:3px dashed var(--red);border-radius:10px;background:#fff3f3;font-weight:700;font-size:14px;color:#9b1118}
+.garde.ouvert{border-color:var(--blue);border-style:solid;background:#eef5ff;color:#13306e}
+
+/* Décompte du vote à main levée */
+.decompte{position:fixed;inset:0;z-index:60;display:grid;place-items:center;background:rgba(10,31,92,.86)}
+.decompte span{font:400 clamp(110px,38vw,280px)/1 var(--f-title);color:var(--yellow);
+  -webkit-text-stroke:12px var(--ink);paint-order:stroke fill;animation:pouf .45s ease-out}
+.decompte span.mot{font-size:clamp(44px,12vw,120px);-webkit-text-stroke:9px var(--ink)}
+@keyframes pouf{from{transform:scale(2.3);opacity:0}to{transform:scale(1);opacity:1}}
+
+/* ---------- Carte perso ---------- */
+.carte{max-width:300px;margin:0 auto 6px;border:5px solid var(--ink);border-radius:16px;overflow:hidden;background:#fff;box-shadow:8px 8px 0 var(--ink)}
+.carte-role{padding:10px 12px 8px;font:400 26px/1 var(--f-title);letter-spacing:.06em;color:#fff;border-bottom:5px solid var(--ink);-webkit-text-stroke:5px var(--ink);paint-order:stroke fill}
+.carte-role.civil{background:var(--sky)}
+.carte-role.undercover{background:var(--red)}
+.carte-role.mrwhite{background:#efeced;color:var(--ink);-webkit-text-stroke:0}
+.carte-img{position:relative;aspect-ratio:1;display:grid;place-items:center;background:repeating-linear-gradient(45deg,#f4f1f2 0 9px,#eae6e8 9px 18px)}
+.carte-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.carte-img > svg{width:54%;height:54%;fill:#c7bfc3}
+.carte-img .sans{position:absolute;left:0;right:0;bottom:0;padding:5px 0;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:rgba(20,16,20,.72)}
+.carte-img .vide{font:400 70px/1 var(--f-title);color:#b9b0b6}
+.carte-nom{padding:12px 10px 14px;border-top:5px solid var(--ink)}
+.carte-nom strong{display:block;font:400 32px/1 var(--f-title);letter-spacing:.03em;font-weight:400}
+.carte-nom small{display:block;margin-top:5px;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+
+/* ---------- Ordre de parole ---------- */
+.ordre{display:grid;gap:8px;max-width:420px;margin:18px auto 6px;text-align:left}
+.ordre li{display:flex;align-items:center;gap:12px;padding:10px 12px;border:3px solid var(--ink);border-radius:10px;background:#fff;font-weight:700}
+.ordre li .n{flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#efeced;font:400 17px/1 var(--f-title)}
+.ordre li.actuel{background:var(--yellow);box-shadow:4px 4px 0 var(--ink)}
+.ordre li.actuel .n{background:var(--ink);color:#fff}
+.ordre li.fait{opacity:.5}
+.ordre li .etat{margin-left:auto;font-size:12px;letter-spacing:.06em;text-transform:uppercase}
+
+/* ---------- Dessin ---------- */
+.toile-box{position:relative;max-width:560px;margin:14px auto 0;border:4px solid var(--ink);border-radius:12px;background:#fff;overflow:hidden;box-shadow:6px 6px 0 var(--ink)}
+.toile-box canvas{display:block;width:100%;aspect-ratio:4/3;touch-action:none;cursor:crosshair}
+.toile-box.verrou canvas{cursor:not-allowed}
+.toile-tag{position:absolute;left:10px;top:10px;padding:5px 8px 3px;font:400 17px/1 var(--f-title);letter-spacing:.05em;background:var(--yellow);border:3px solid var(--ink);border-radius:6px;pointer-events:none}
+.toile-hint{position:absolute;inset:auto 0 12px;text-align:center;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#a79ca1;pointer-events:none;transition:opacity .2s}
+.toile-box.touche .toile-hint{opacity:0}
+.toile-stamp{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-12deg) scale(2.2);opacity:0;pointer-events:none;white-space:nowrap;
+  font:400 40px/1 var(--f-title);letter-spacing:.04em;color:var(--red);background:rgba(255,255,255,.86);border:5px solid var(--red);border-radius:10px;padding:8px 14px 4px;
+  transition:transform .28s cubic-bezier(.3,1.6,.5,1), opacity .15s}
+/* le tampon s'efface pour laisser voir le dessin */
+.toile-box.verrou .toile-stamp{animation:tampon 2s cubic-bezier(.3,1.6,.5,1) forwards}
+@keyframes tampon{
+  0%{opacity:0;transform:translate(-50%,-50%) rotate(-12deg) scale(2.2)}
+  18%{opacity:1;transform:translate(-50%,-50%) rotate(-12deg) scale(1)}
+  70%{opacity:1;transform:translate(-50%,-50%) rotate(-12deg) scale(1)}
+  100%{opacity:0;transform:translate(-50%,-50%) rotate(-12deg) scale(1)}
+}
+
+/* ---------- Vote ---------- */
+.grille{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;max-width:620px;margin:18px auto 8px}
+.cible{display:flex;align-items:center;gap:10px;padding:14px 12px;border:4px solid var(--ink);border-radius:12px;background:#fff;cursor:pointer;box-shadow:5px 5px 0 var(--ink);text-align:left;font-weight:700;font-size:16px}
+.cible:hover{background:#fff6db}
+.cible[aria-pressed="true"]{background:var(--red);color:#fff}
+.cible .tok{flex:none;width:34px;height:34px;overflow:visible;fill:var(--sky);stroke:var(--ink);stroke-width:3.5;paint-order:stroke;stroke-linejoin:round}
+.cible[aria-pressed="true"] .tok{fill:#fff}
+.cible:disabled{opacity:.4;cursor:not-allowed;box-shadow:5px 5px 0 var(--ink)}
+
+/* ---------- Révélation / fin ---------- */
+.verdict{display:inline-block;padding:10px 20px 6px;margin-bottom:12px;border:5px solid var(--ink);border-radius:12px;font:400 clamp(30px,5.5vw,44px)/1 var(--f-title);letter-spacing:.04em;color:#fff;transform:rotate(-1.5deg)}
+.verdict.civils{background:var(--sky)}
+.verdict.intrus{background:var(--red)}
+.verdict.neutre{background:#efeced;color:var(--ink)}
+.votes{display:grid;gap:6px;max-width:360px;margin:14px auto;text-align:left;font-size:14px;font-weight:700}
+.votes div{display:flex;justify-content:space-between;gap:10px;padding:8px 12px;border:3px solid var(--ink);border-radius:8px;background:#fff}
+.recap{display:grid;gap:8px;max-width:460px;margin:16px auto 0;text-align:left}
+.recap div{display:flex;align-items:center;gap:10px;padding:10px 12px;border:3px solid var(--ink);border-radius:10px;background:#fff;font-weight:700}
+.recap .role{margin-left:auto;padding:4px 9px;border-radius:20px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#fff}
+.recap .role.civil{background:var(--sky)}
+.recap .role.undercover{background:var(--red)}
+.recap .role.mrwhite{background:#6c6370}
+.recap .mort{text-decoration:line-through;opacity:.6}
+.duo-fin{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:14px 0 4px;font-weight:700}
+.duo-fin span{padding:8px 12px;border:3px solid var(--ink);border-radius:10px;background:#fff}
+.devine{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:14px 0 6px}
+.devine input{width:min(320px,100%);padding:13px 14px;border:3px solid var(--ink);border-radius:10px;background:#fff;font-size:16px;font-weight:700}
+.devine input:focus{outline:none;border-color:var(--orange);box-shadow:0 0 0 4px rgba(255,122,0,.3)}
+
+/* ---------- Pub (jamais pendant une manche) ---------- */
+.pub{display:block;width:100%;max-width:760px;margin:40px auto 0}
+.pub-tag{display:block;margin-bottom:6px;font-size:10px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#fff}
+.pub-zone{display:grid;place-items:center;min-height:104px;padding:8px;border:3px dashed rgba(255,255,255,.75);border-radius:12px;background:rgba(255,255,255,.14)}
+.pub-zone:empty::after{content:"Emplacement libre · bannière 728 × 90 (320 × 100 sur mobile)";padding:0 12px;font-size:12px;font-weight:700;color:#fff;text-align:center}
+@media (min-width:760px){.pub-zone{min-height:94px}}
+
+.toast{position:fixed;left:50%;bottom:22px;z-index:50;max-width:calc(100% - 32px);transform:translate(-50%,160%);
+  padding:13px 18px;border:3px solid var(--yellow);border-radius:12px;background:var(--ink);color:#fff;font-weight:700;font-size:14px;
+  transition:transform .3s cubic-bezier(.3,1.6,.5,1)}
+.toast.show{transform:translate(-50%,0)}
+
+@media (max-width:520px){
+  .ecran{padding:26px 14px 20px}
+  .infos .tag.mode{display:none}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* ====================================================================
+   MODE EN LIGNE
+   ==================================================================== */
+
+/* code du salon */
+.code-salon{display:inline-flex;align-items:center;gap:10px;margin:6px 0 4px;padding:12px 20px 8px;
+  background:var(--ink);color:var(--yellow);border-radius:12px;
+  font:400 clamp(34px,8vw,52px)/1 var(--f-title);letter-spacing:.16em}
+.code-copier{border:3px solid var(--yellow);background:none;color:var(--yellow);border-radius:8px;
+  padding:6px 9px;font:inherit;font-family:var(--f-body);font-size:11px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;cursor:pointer}
+.code-copier:hover{background:var(--yellow);color:var(--ink)}
+
+/* liste des joueurs du salon */
+.salon-liste{display:grid;gap:8px;max-width:420px;margin:18px auto 6px;text-align:left}
+.salon-joueur{display:flex;align-items:center;gap:10px;padding:10px 12px;border:3px solid var(--ink);
+  border-radius:10px;background:#fff;font-weight:700;animation:drop .3s cubic-bezier(.3,1.6,.5,1) both}
+.salon-joueur .tok{flex:none;width:32px;height:32px;overflow:visible;fill:var(--sky);stroke:var(--ink);
+  stroke-width:3.5;paint-order:stroke;stroke-linejoin:round}
+.salon-joueur .marque{margin-left:auto;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:4px 8px;border-radius:20px;background:var(--yellow)}
+.salon-joueur.moi{box-shadow:4px 4px 0 var(--ink)}
+.salon-vide{padding:14px;border:3px dashed var(--ink);border-radius:10px;background:#fff;font-weight:700;color:var(--muted)}
+
+/* bandeau d'attente */
+.attente{display:flex;align-items:center;justify-content:center;gap:12px;margin:16px auto 0;max-width:460px;
+  padding:14px 18px;border:3px solid var(--ink);border-radius:12px;background:var(--ink);color:#fff;font-weight:700}
+.attente .points{display:inline-flex;gap:4px}
+.attente .points i{width:7px;height:7px;border-radius:50%;background:var(--yellow);animation:pulse 1s infinite}
+.attente .points i:nth-child(2){animation-delay:.15s}
+.attente .points i:nth-child(3){animation-delay:.3s}
+@keyframes pulse{0%,100%{opacity:.25;transform:translateY(0)}50%{opacity:1;transform:translateY(-4px)}}
+
+/* progression (cartes vues, votes) */
+.jauge-salon{max-width:420px;margin:14px auto 0}
+.jauge-salon .barre{height:12px;border:3px solid var(--ink);border-radius:8px;background:#fff;overflow:hidden}
+.jauge-salon .barre i{display:block;height:100%;width:0;background:var(--sky);transition:width .3s}
+.jauge-salon p{margin:7px 0 0;font-size:13px;font-weight:700;color:var(--muted)}
+
+/* toile en lecture seule pendant le tour d'un autre */
+.toile-box.lecture canvas{cursor:default}
+.toile-box.lecture .toile-hint{display:none}
+
+/* qui joue, en haut des ecrans */
+.au-tour{display:inline-block;margin:0 auto 10px;padding:8px 14px 6px;border:3px solid var(--ink);border-radius:10px;
+  background:var(--yellow);font:400 22px/1 var(--f-title);letter-spacing:.04em}
+.au-tour.moi{background:var(--orange);color:#fff;-webkit-text-stroke:5px var(--ink);paint-order:stroke fill}
+
+/* deconnexion / erreurs */
+.alerte{max-width:460px;margin:16px auto 0;padding:12px 14px;border:3px solid var(--red);border-radius:10px;
+  background:#fff1f1;color:#9b1118;font-weight:700;font-size:14px}

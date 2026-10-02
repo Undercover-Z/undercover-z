@@ -135,6 +135,10 @@ button,input,output{font:inherit;color:inherit}
 .input::placeholder{text-transform:none;letter-spacing:0;font-weight:500;color:#9a8f94}
 .input:focus{border-color:var(--orange);box-shadow:0 0 0 4px rgba(255,122,0,.3)}
 .join-row{margin-bottom:8px}
+.message-salon{margin:12px 0 0;padding:11px 13px;border:3px solid var(--red);border-radius:10px;background:#fff1f1;
+  font-size:14px;font-weight:700;line-height:1.4;color:#9b1118}
+.message-salon.info{border-color:var(--blue);background:#eef4ff;color:#13306e}
+.message-salon a{color:inherit}
 
 /* Tours avant le vote */
 .tours-row{display:flex;align-items:center;justify-content:space-between;gap:12px 20px;flex-wrap:wrap;
@@ -426,13 +430,14 @@ button,input,output{font:inherit;color:inherit}
         <button type="button" id="room-join-btn" data-room="join" aria-pressed="false">Rejoindre un salon</button>
       </div>
       <div id="room-create">
-        <p>Tu seras l'<b>hôte</b>. Code de ton salon : <span class="code">KI-7F3Q</span></p>
-        <p class="hint">Partage ce code à tes amis : ils le saisissent dans « Rejoindre un salon ».</p>
+        <p>Tu seras l'<b>hôte</b> : tes réglages ci-dessous s'appliquent à tout le monde.</p>
+        <p class="hint">Un code de salon sera généré au lancement et affiché en grand dans la salle d'attente — tu n'auras qu'à le dicter à tes amis.</p>
       </div>
       <div id="room-join" hidden>
         <div class="join-row"><input class="input" id="room-code" maxlength="7" placeholder="Code du salon (ex. KI-7F3Q)" aria-label="Code du salon"></div>
         <p class="hint">C'est l'hôte qui choisit le mode de jeu et le nombre de joueurs.</p>
       </div>
+      <p class="message-salon" id="message-salon" hidden></p>
     </div>
     <div class="sub" id="sub-local" hidden>
       <p><b>Un seul écran pour tout le monde.</b> Chaque joueur découvre son mot en secret, puis passe l'appareil au suivant.</p>
@@ -651,6 +656,9 @@ button,input,output{font:inherit;color:inherit}
 
 <div class="toast" id="toast" role="status"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<script src="sb.js"></script>
 <script src="mots.js"></script>
 <script>
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
@@ -698,6 +706,27 @@ if(guest){
 }else{
   $("#pseudo").textContent=user.pseudo;
 }
+
+/* si un compte est connecté, c'est lui qui fait référence */
+(async()=>{
+  if(!Compte.pret()||guest) return;
+  const moi=await Compte.moi();
+  if(!moi){
+    $("#pseudo").textContent="Invité";
+    $("#plevel").textContent="non connecté";
+    $("#logout").textContent="Se connecter";
+    messageSalon('Pour jouer en ligne il faut un compte. <a href="index.html">Se connecter ou s\'inscrire</a> — ou passe en local, ça marche sans.',"info");
+    return;
+  }
+  $("#pseudo").textContent=moi.pseudo;
+  $("#plevel").textContent=`${moi.parties} partie${moi.parties>1?"s":""} · ${moi.victoires} victoire${moi.victoires>1?"s":""}`;
+  $("#avatar").style.setProperty("--aura",moi.aura);
+  $("#logout").addEventListener("click",async e=>{
+    e.preventDefault();
+    await Compte.deconnecter();
+    location.href="index.html";
+  });
+})();
 
 $$(".choice").forEach(b=>b.addEventListener("click",()=>{state[b.dataset.group]=b.dataset.value;update();}));
 $$("[data-room]").forEach(b=>b.addEventListener("click",()=>{state.room=b.dataset.room;update();}));
@@ -922,11 +951,42 @@ function message(txt){
   clearTimeout(toastTimer);
   toastTimer=setTimeout(()=>t.classList.remove("show"),2800);
 }
-$("#go").addEventListener("click",()=>{
+function messageSalon(txt,type){
+  const m=$("#message-salon");
+  if(!txt){ m.hidden=true; return; }
+  m.innerHTML=txt; m.className="message-salon"+(type?" "+type:""); m.hidden=false;
+}
+
+$("#go").addEventListener("click",async()=>{
   if(state.where==="online"){
-    message(state.room==="join"
-      ?"Le mode en ligne n'est pas encore branché : rejoins une partie en local pour l'instant."
-      :"Le mode en ligne n'est pas encore branché : passe en local pour jouer tout de suite.");
+    if(!Compte.pret()) return messageSalon("Le mode en ligne n'est pas configuré sur ce site.");
+    const moi=await Compte.moi();
+    if(!moi) return messageSalon('Il faut un compte pour jouer en ligne. <a href="index.html">Se connecter ou s\'inscrire</a>.');
+
+    const go=$("#go"); go.disabled=true;
+
+    if(state.room==="join"){
+      const codeSaisi=($("#room-code").value||"").trim().toUpperCase();
+      if(!codeSaisi){ go.disabled=false; return messageSalon("Saisis le code que l'hôte t'a donné."); }
+      messageSalon("Connexion au salon…","info");
+      const r=await Salons.rejoindre(codeSaisi);
+      go.disabled=false;
+      if(!r.ok) return messageSalon(r.erreur);
+      location.href="enligne.html?salon="+encodeURIComponent(r.code);
+      return;
+    }
+
+    messageSalon("Création du salon…","info");
+    const reglagesEnLigne={
+      mode:state.mode==="draw"?"dessin":"voix",
+      players:state.players, uc:state.uc, mw:state.mw,
+      mangas:[...state.mangas], duoType:state.duoType,
+      changementPerso:state.changementPerso, tours:state.tours
+    };
+    const r=await Salons.creer(reglagesEnLigne);
+    go.disabled=false;
+    if(!r.ok) return messageSalon(r.erreur);
+    location.href="enligne.html?salon="+encodeURIComponent(r.code);
     return;
   }
   const reglages={

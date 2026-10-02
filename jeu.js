@@ -37,7 +37,9 @@ function _normaliser(txt){
     .replace(/[^a-z0-9]+/g, " ").trim();
 }
 
-function creerJeu(reglages){
+/* etatSauve : pour reprendre une partie en cours (l'hote qui recharge sa
+   page en ligne). On repart de l'etat complet, duo et roles compris. */
+function creerJeu(reglages, etatSauve){
   const rnd = Math.random;
   const paquet = BANQUE.pioche({ mangas: reglages.mangas, type: reglages.duoType });
   if (!paquet.length) throw new Error("Aucun duo disponible avec ces mangas");
@@ -76,6 +78,7 @@ function creerJeu(reglages){
     for (let i = 0; i < reglages.mrwhite;    i++) joueur(ids[k++]).role = "mrwhite";
     Object.assign(etat, { phase:"distribution", manche:1, tour:1, traits:[], votes:{},
       exAequo:null, secondTour:false, elimine:null, motDevine:null, gagnant:null, tourIdx:0, ordre:[] });
+    etat.tirage = (etat.tirage || 0) + 1;   // sert aux joueurs en ligne pour relire leur carte
   }
 
   function ordreDeParole(){
@@ -100,10 +103,15 @@ function creerJeu(reglages){
     return null;
   }
 
-  distribuer();
+  if (etatSauve && etatSauve.duo && Array.isArray(etatSauve.joueurs)){
+    Object.assign(etat, etatSauve);        // on reprend la partie telle quelle
+  } else {
+    distribuer();
+  }
 
   return {
     etat,
+    reprise: !!(etatSauve && etatSauve.duo),
 
     /* ---- distribution ---- */
     carte(id){
@@ -121,6 +129,7 @@ function creerJeu(reglages){
       indexDuo++;
       etat.duo = paquet[indexDuo % paquet.length];
       etat.joueurs.forEach(j => j.aVu = false);   // tout le monde revoit sa carte
+      etat.tirage = (etat.tirage || 0) + 1;
       return true;
     },
 
@@ -199,6 +208,36 @@ function creerJeu(reglages){
       if (bon){ etat.gagnant = "intrus"; etat.phase = "fin"; return true; }
       etat.phase = "revelation";
       return false;
+    },
+
+    /* ---- etat PUBLIC (mode en ligne) ----
+       C'est le seul etat qui circule entre les joueurs. Il ne contient
+       jamais le duo ni le role de quelqu'un encore en vie : sinon il
+       suffirait d'ouvrir la console pour savoir qui est l'intrus.
+       Un joueur elimine, lui, est revele a tout le monde. */
+    etatPublic(){
+      const fini = etat.phase === "fin";
+      return {
+        phase: etat.phase, manche: etat.manche, tour: etat.tour, tirage: etat.tirage || 1,
+        toursParManche: etat.toursParManche, mode: etat.mode,
+        changementPerso: etat.changementPerso,
+        ordre: etat.ordre, tourIdx: etat.tourIdx,
+        traits: etat.traits,
+        elimine: etat.elimine, motDevine: etat.motDevine, gagnant: etat.gagnant,
+        vus: etat.joueurs.filter(j => j.aVu).map(j => j.id),
+        nbVotes: Object.keys(etat.votes).length,
+        nbVotants: vivants().length,
+        joueurs: etat.joueurs.map(j => ({
+          id: j.id, nom: j.nom, vivant: j.vivant,
+          role: (fini || !j.vivant) ? j.role : null
+        })),
+        /* le perso d'un joueur elimine est devoile, comme autour d'une table */
+        persoElimine: (etat.elimine !== null && etat.duo)
+          ? (joueur(etat.elimine).role === "civil" ? etat.duo.civils
+            : joueur(etat.elimine).role === "undercover" ? etat.duo.infiltre : null)
+          : null,
+        duo: fini ? etat.duo : null
+      };
     },
 
     /* ---- suite ---- */

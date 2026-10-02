@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Undercover Z — Partie en ligne</title>
+<meta name="description" content="Partie en ligne d'Undercover Z : chacun sur son appareil, dans un salon partagé.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#141014">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Undercover Z">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bangers&family=Dela+Gothic+One&family=Rubik:wght@400;500;700;900&display=swap">
+<link rel="stylesheet" href="style-jeu.css">
+</head>
+<body>
+<div class="bg" aria-hidden="true"><div class="rays"></div></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="fighter" viewBox="0 0 64 64">
+      <path d="M10 64 C12 52 22 49 32 49 C42 49 52 52 54 64 Z"/>
+      <circle cx="32" cy="36" r="14"/>
+      <path d="M17 34 L6 22 L17 23 L11 9 L24 17 L28 3 L34 15 L44 4 L43 18 L57 11 L49 25 L59 30 L47 33 Q32 22 17 34 Z"/>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="index.html" aria-label="Undercover Z, accueil">
+      <span class="emblem" lang="ja" aria-hidden="true">隠</span>
+      <span class="brand-name">Undercover <b>Z</b></span>
+    </a>
+    <div class="infos">
+      <span class="tag" id="tag-code">KI-····</span>
+      <span class="tag manche" id="tag-manche">Salon</span>
+      <span class="tag mode" id="tag-moi">—</span>
+      <a class="quitter" href="setup.html" id="quitter">Quitter</a>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ===== Salle d'attente ===== -->
+  <section class="panel ecran" id="ecran-salon">
+    <p class="jp" lang="ja">待機室</p>
+    <h1>Salle d'attente</h1>
+    <p>Partage ce code aux autres joueurs : ils le saisissent dans « Rejoindre un salon ».</p>
+    <div class="code-salon"><span id="code-affiche">KI-····</span>
+      <button class="code-copier" type="button" id="copier-code">Copier</button>
+    </div>
+    <p class="petit" id="salon-reglages">—</p>
+    <div class="salon-liste" id="salon-liste"></div>
+    <div class="jauge-salon">
+      <div class="barre"><i id="salon-barre"></i></div>
+      <p id="salon-compte">—</p>
+    </div>
+    <div id="salon-hote" hidden>
+      <button class="btn-ki" type="button" id="lancer" disabled><span>Lancer la partie !</span></button>
+    </div>
+    <div class="attente" id="salon-attente" hidden>
+      <span>En attente de l'hôte</span>
+      <span class="points" aria-hidden="true"><i></i><i></i><i></i></span>
+    </div>
+    <div class="alerte" id="salon-alerte" hidden></div>
+  </section>
+
+  <!-- ===== Ma carte ===== -->
+  <section class="panel ecran" id="ecran-carte" hidden>
+    <h2 id="carte-titre">Ta carte</h2>
+    <div class="carte">
+      <div class="carte-role" id="carte-role">Civil</div>
+      <div class="carte-img">
+        <img id="carte-img" alt="">
+        <svg viewBox="0 0 64 64" aria-hidden="true" id="carte-silhouette"><use href="#fighter"/></svg>
+        <span class="vide" id="carte-vide" hidden>?</span>
+        <span class="sans" id="carte-sans">Image à ajouter</span>
+      </div>
+      <div class="carte-nom">
+        <strong id="carte-perso">—</strong>
+        <small id="carte-manga">—</small>
+      </div>
+    </div>
+    <p class="petit" id="carte-note">Retiens-le, personne d'autre ne le voit.</p>
+    <div><button class="btn-ki" type="button" id="carte-ok"><span>C'est vu !</span></button></div>
+    <div class="actions"><button class="btn2" type="button" id="carte-change">Je ne connais pas ce perso</button></div>
+    <div class="jauge-salon">
+      <div class="barre"><i id="vus-barre"></i></div>
+      <p id="vus-compte">—</p>
+    </div>
+  </section>
+
+  <!-- ===== Attente générique ===== -->
+  <section class="panel ecran" id="ecran-attente" hidden>
+    <p class="jp" lang="ja">お待ちください</p>
+    <h2 id="attente-titre">En attente</h2>
+    <p id="attente-texte">—</p>
+    <div class="attente"><span id="attente-qui">…</span><span class="points" aria-hidden="true"><i></i><i></i><i></i></span></div>
+    <div class="jauge-salon" id="attente-jauge" hidden>
+      <div class="barre"><i id="attente-barre"></i></div>
+      <p id="attente-compte">—</p>
+    </div>
+  </section>
+
+  <!-- ===== Indices ===== -->
+  <section class="panel ecran" id="ecran-indices" hidden>
+    <p class="jp" lang="ja">ヒント</p>
+    <h2 id="indices-titre">Un indice chacun</h2>
+    <div class="au-tour" id="indices-tour">—</div>
+    <p class="petit">Un seul mot ou une courte phrase. Ni le nom du perso, ni un indice trop évident.</p>
+    <ol class="ordre" id="ordre-liste"></ol>
+    <div><button class="btn-ki" type="button" id="indice-ok"><span>Indice donné</span></button></div>
+    <div class="attente" id="indices-attente" hidden><span id="indices-qui">…</span><span class="points" aria-hidden="true"><i></i><i></i><i></i></span></div>
+  </section>
+
+  <!-- ===== Dessin ===== -->
+  <section class="panel ecran" id="ecran-dessin" hidden>
+    <p class="jp" lang="ja">一筆</p>
+    <h2 id="dessin-titre">Le dessin commun</h2>
+    <div class="au-tour" id="dessin-tour">—</div>
+    <div class="toile-box" id="toile-box">
+      <canvas id="toile" aria-label="Dessin commun de la partie"></canvas>
+      <span class="toile-tag" id="toile-tag">—</span>
+      <span class="toile-hint">Trace ton trait</span>
+      <span class="toile-stamp">Trait gravé !</span>
+    </div>
+    <div><button class="btn-ki" type="button" id="dessin-ok" disabled><span>C'est posé</span></button></div>
+    <div class="attente" id="dessin-attente" hidden><span id="dessin-qui">…</span><span class="points" aria-hidden="true"><i></i><i></i><i></i></span></div>
+  </section>
+
+  <!-- ===== Vote ===== -->
+  <section class="panel ecran" id="ecran-vote" hidden>
+    <p class="jp" lang="ja">投票</p>
+    <h2 id="vote-titre">Qui est l'intrus ?</h2>
+    <p class="petit" id="vote-sous">Vote sur ton écran : personne ne voit ton choix, pas même l'hôte à l'écran.</p>
+    <div class="grille" id="vote-grille"></div>
+    <div><button class="btn-ki" type="button" id="vote-ok" disabled><span>Je vote</span></button></div>
+    <div class="jauge-salon">
+      <div class="barre"><i id="vote-barre"></i></div>
+      <p id="vote-compte">—</p>
+    </div>
+  </section>
+
+  <!-- ===== Révélation ===== -->
+  <section class="panel ecran" id="ecran-revelation" hidden>
+    <div class="verdict" id="rev-verdict">Éliminé</div>
+    <h2 id="rev-titre">—</h2>
+    <p id="rev-texte">—</p>
+    <div id="rev-hote" hidden><button class="btn-ki" type="button" id="rev-ok"><span>Continuer</span></button></div>
+    <div class="attente" id="rev-attente" hidden><span>L'hôte continue la partie</span><span class="points" aria-hidden="true"><i></i><i></i><i></i></span></div>
+  </section>
+
+  <!-- ===== Mr. White devine ===== -->
+  <section class="panel ecran" id="ecran-mrwhite" hidden>
+    <div class="verdict neutre">Mr. White démasqué</div>
+    <h2 id="mw-titre">Dernière chance</h2>
+    <p>Tu es éliminé — mais si tu devines le perso des civils, les intrus gagnent la partie.</p>
+    <div class="devine">
+      <input id="mw-input" placeholder="Le perso des civils…" autocomplete="off" list="mw-liste">
+      <datalist id="mw-liste"></datalist>
+    </div>
+    <div><button class="btn-ki" type="button" id="mw-ok"><span>Je tente !</span></button></div>
+    <div class="actions"><button class="btn2" type="button" id="mw-passe">Je passe</button></div>
+  </section>
+
+  <!-- ===== Fin ===== -->
+  <section class="panel ecran" id="ecran-fin" hidden>
+    <div class="verdict" id="fin-verdict">Victoire</div>
+    <h2 id="fin-titre">—</h2>
+    <div class="duo-fin" id="fin-duo"></div>
+    <div class="recap" id="fin-recap"></div>
+    <div id="fin-hote" hidden><button class="btn-ki" type="button" id="fin-rejouer"><span>Rejouer !</span></button></div>
+    <div class="attente" id="fin-attente" hidden><span>L'hôte peut relancer une partie</span><span class="points" aria-hidden="true"><i></i><i></i><i></i></span></div>
+    <div class="actions">
+      <button class="btn2" type="button" id="fin-salon">Retour aux réglages</button>
+    </div>
+  </section>
+
+  <aside class="pub" id="pub-fin" aria-label="Publicité" hidden>
+    <span class="pub-tag">Publicité</span>
+    <div class="pub-zone" id="pub-fin-zone"></div>
+  </aside>
+
+</main>
+
+<div class="toast" id="toast" role="status"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
+<script src="sb.js"></script>
+<script src="mots.js"></script>
+<script src="jeu.js"></script>
+<script src="partie.js"></script>
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const ROLES={civil:"Civil",undercover:"Undercover",mrwhite:"Mr. White"};
+const ECRANS=["salon","carte","attente","indices","dessin","vote","revelation","mrwhite","fin"];
+const code=(new URLSearchParams(location.search).get("salon")||"").toUpperCase();
+
+let moi=null, salon=null, maPlace=null, estHote=false, partie=null;
+let jaiVote=false, phaseVue="", choixVote=null, tirageVu=null;
+
+function ecran(nom){
+  ECRANS.forEach(e=>$("#ecran-"+e).hidden = e!==nom);
+  $("#pub-fin").hidden = nom!=="fin";
+}
+let minuteurToast;
+function toast(txt){
+  const t=$("#toast"); t.textContent=txt; t.classList.add("show");
+  clearTimeout(minuteurToast); minuteurToast=setTimeout(()=>t.classList.remove("show"),3000);
+}
+function attendre(titre,texte,qui,fait,total){
+  $("#attente-titre").textContent=titre;
+  $("#attente-texte").textContent=texte||"";
+  $("#attente-qui").textContent=qui||"…";
+  const jauge=$("#attente-jauge");
+  if(total){ jauge.hidden=false; $("#attente-barre").style.width=(fait/total*100)+"%";
+    $("#attente-compte").textContent=`${fait} sur ${total}`; }
+  else jauge.hidden=true;
+  ecran("attente");
+}
+
+/* ---------- arrivée ---------- */
+(async function entrer(){
+  if(!Compte.pret()){ document.body.innerHTML="<p style='padding:40px;font:700 16px system-ui'>Le mode en ligne n'est pas configuré sur ce site.</p>"; return; }
+  moi = await Compte.moi();
+  if(!moi){ location.href="index.html"; return; }
+  if(!code){ location.href="setup.html"; return; }
+
+  $("#tag-code").textContent=code;
+  $("#code-affiche").textContent=code;
+  $("#tag-moi").textContent=moi.pseudo;
+
+  const r=await Salons.lire(code);
+  if(!r.ok){ $("#salon-alerte").hidden=false; $("#salon-alerte").textContent=r.erreur; return; }
+  salon=r.salon;
+  estHote = salon.hote===moi.id;
+  $("#salon-hote").hidden=!estHote;
+  $("#salon-attente").hidden=estHote;
+
+  const g=salon.reglages||{};
+  $("#salon-reglages").textContent=
+    `${g.mode==="dessin"?"Mode dessin":"Mode voix haute"} · ${g.tours||1} tour${(g.tours||1)>1?"s":""} avant le vote · `+
+    `${g.players} joueurs attendus · ${g.uc||0} undercover · ${g.mw||0} Mr. White`;
+
+  /* si la partie a déjà commencé, on rejoint directement (reconnexion) */
+  if(salon.etat){ await rejoindreJeu(); return; }
+
+  ecran("salon");
+  await majSalon();
+  Salons.surJoueurs(code, majSalon);
+  Salons.surSalon(code, async s=>{
+    if(s && s.etat && !partie){ await rejoindreJeu(); }
+  });
+})();
+
+/* ---------- salle d'attente ---------- */
+let listeJoueurs=[];
+async function majSalon(){
+  const r=await Salons.joueurs(code);
+  if(!r.ok) return;
+  listeJoueurs=r.joueurs;
+  const attendus=(salon.reglages&&salon.reglages.players)||listeJoueurs.length;
+  $("#salon-liste").innerHTML = listeJoueurs.length
+    ? listeJoueurs.map(j=>`<div class="salon-joueur${j.joueur===moi.id?" moi":""}">
+        <svg class="tok" viewBox="0 0 64 64" aria-hidden="true"><use href="#fighter"/></svg>
+        ${j.pseudo}${j.joueur===salon.hote?'<span class="marque">hôte</span>':j.joueur===moi.id?'<span class="marque">toi</span>':""}
+      </div>`).join("")
+    : `<div class="salon-vide">Personne pour l'instant…</div>`;
+  $("#salon-barre").style.width=Math.min(listeJoueurs.length/attendus*100,100)+"%";
+  $("#salon-compte").textContent=`${listeJoueurs.length} joueur${listeJoueurs.length>1?"s":""} sur ${attendus} attendus`;
+
+  if(estHote){
+    const assez=listeJoueurs.length>=3;
+    const intrus=(salon.reglages.uc||0)+(salon.reglages.mw||0);
+    const trop=intrus>=Math.ceil(listeJoueurs.length/2);
+    $("#lancer").disabled=!assez||trop;
+    $("#lancer span").textContent = !assez ? "Il faut au moins 3 joueurs"
+      : trop ? "Trop d'intrus pour ce nombre" : "Lancer la partie !";
+  }
+}
+
+$("#copier-code").addEventListener("click",async()=>{
+  try{ await navigator.clipboard.writeText(code); toast("Code copié : "+code); }
+  catch(_){ toast("Copie impossible : note le code "+code); }
+});
+
+function alerte(txt){
+  const a=$("#salon-alerte");
+  if(!txt){ a.hidden=true; return; }
+  a.textContent=txt; a.hidden=false;
+}
+
+$("#lancer").addEventListener("click",async()=>{
+  $("#lancer").disabled=true;
+  alerte("");
+  try{
+    /* on renumérote les places 0..n-1 : elles doivent coller aux joueurs du moteur */
+    const r=await Salons.joueurs(code);
+    const liste=r.joueurs;
+    for(let i=0;i<liste.length;i++) if(liste[i].place!==i) await Salons.placerJoueur(code,liste[i].joueur,i);
+    liste.forEach((j,i)=>j.place=i);
+    const reglages={...salon.reglages, players:liste.length};
+    partie=creerPartie("enligne",{code,estHote:true,reglages,joueurs:liste});
+    await partie.pret;
+    maPlace=partie.maPlace();
+    prepareListeMrWhite(reglages);
+    partie.surEtat(rendre);
+  }catch(err){
+    partie=null;
+    $("#lancer").disabled=false;
+    alerte("La partie n'a pas pu démarrer. "+(err&&err.message?err.message:err));
+    ecran("salon");
+  }
+});
+
+async function rejoindreJeu(){
+  const r=await Salons.joueurs(code);
+  const liste=(r.ok?r.joueurs:[]).slice().sort((a,b)=>a.place-b.place);
+  const moiDansLaPartie=liste.find(j=>j.joueur===moi.id);
+  if(!moiDansLaPartie){
+    $("#salon-alerte").hidden=false;
+    $("#salon-alerte").textContent="La partie a commencé sans toi. Demande à l'hôte d'en relancer une.";
+    ecran("salon");
+    return;
+  }
+  try{
+    partie=creerPartie("enligne",{code,estHote,reglages:salon.reglages,joueurs:liste});
+    await partie.pret;
+    maPlace=partie.maPlace();
+    prepareListeMrWhite(salon.reglages);
+    partie.surEtat(rendre);
+  }catch(err){
+    partie=null;
+    $("#salon-alerte").hidden=false;
+    $("#salon-alerte").textContent="Impossible de rejoindre la partie. "+(err&&err.message?err.message:err);
+    ecran("salon");
+  }
+}
+
+function prepareListeMrWhite(reglages){
+  $("#mw-liste").innerHTML=BANQUE.filtrer({mangas:reglages.mangas,type:reglages.duoType})
+    .map(d=>`<option value="${d.civils.nom}"></option>`).join("");
+}
+
+/* ---------- ma carte ---------- */
+function afficherCarte(e){
+  const c=partie.maCarte();
+  const role=$("#carte-role"), img=$("#carte-img"), sil=$("#carte-silhouette"), vide=$("#carte-vide"), sans=$("#carte-sans");
+  if(!c){ attendre("Distribution","L'hôte distribue les cartes.","Patiente un instant"); return; }
+  $("#carte-titre").textContent=`${moi.pseudo}, voilà ta carte`;
+  role.className="carte-role "+c.role;
+  role.textContent=ROLES[c.role];
+  if(c.perso){
+    $("#carte-perso").textContent=c.perso.nom;
+    $("#carte-manga").textContent=c.perso.mangaNom||"";
+    $("#carte-note").textContent="Retiens-le : personne d'autre ne voit cette carte.";
+    vide.hidden=true; sil.hidden=false; sans.hidden=false;
+    if(img.getAttribute("src")!==c.perso.photo){ img.hidden=true; img.src=c.perso.photo; }
+  }else{
+    $("#carte-perso").textContent="Aucun perso";
+    $("#carte-manga").textContent="à toi de bluffer";
+    $("#carte-note").textContent="Tu n'as aucun perso : écoute les autres, fais comme si, et survis.";
+    img.hidden=true; img.removeAttribute("src"); sil.hidden=true; sans.hidden=true; vide.hidden=false;
+  }
+  $("#carte-change").hidden=!e.changementPerso||!c.perso;
+  const vus=e.vus.length, total=e.joueurs.length;
+  $("#vus-barre").style.width=(vus/total*100)+"%";
+  $("#vus-compte").textContent=`${vus} sur ${total} ont vu leur carte`;
+  ecran("carte");
+}
+$("#carte-img").addEventListener("load",()=>{ $("#carte-img").hidden=false; $("#carte-sans").hidden=true; $("#carte-silhouette").hidden=true; });
+$("#carte-img").addEventListener("error",()=>{ $("#carte-img").hidden=true; $("#carte-sans").hidden=false; $("#carte-silhouette").hidden=false; });
+$("#carte-ok").addEventListener("click",()=>{ partie.envoyer({type:"vu"}); });
+$("#carte-change").addEventListener("click",async()=>{
+  await partie.envoyer({type:"changerDuo"});
+  toast("Nouveau duo demandé : tout le monde revoit sa carte.");
+});
+
+/* ---------- dessin ---------- */
+const cv=$("#toile"), boite=$("#toile-box"), ctx=cv.getContext("2d");
+let traitEnCours=null, dernier=null, verrou=true;
+function dims(){ const r=cv.getBoundingClientRect(); return {w:r.width,h:r.height}; }
+function redessiner(){
+  const {w,h}=dims();
+  ctx.fillStyle="#fff"; ctx.fillRect(0,0,w,h);
+  ctx.strokeStyle="#000"; ctx.lineWidth=4; ctx.lineCap="round"; ctx.lineJoin="round";
+  const trace=pts=>{
+    ctx.beginPath();
+    pts.forEach(([x,y],i)=> i?ctx.lineTo(x*w,y*h):ctx.moveTo(x*w,y*h));
+    if(pts.length===1) ctx.lineTo(pts[0][0]*w+.01,pts[0][1]*h);
+    ctx.stroke();
+  };
+  const e=partie&&partie.etat();
+  if(e&&e.traits) e.traits.forEach(t=>trace(t.points));
+  if(traitEnCours&&traitEnCours.length) trace(traitEnCours);
+}
+function tailleToile(){
+  const r=cv.getBoundingClientRect(), d=window.devicePixelRatio||1;
+  cv.width=Math.round(r.width*d); cv.height=Math.round(r.height*d);
+  ctx.setTransform(d,0,0,d,0,0);
+  redessiner();
+}
+const relatif=e=>{ const r=cv.getBoundingClientRect(); return [ +((e.clientX-r.left)/r.width).toFixed(3), +((e.clientY-r.top)/r.height).toFixed(3) ]; };
+cv.addEventListener("pointerdown",e=>{
+  if(verrou) return;
+  traitEnCours=[relatif(e)]; dernier=traitEnCours[0];
+  cv.setPointerCapture(e.pointerId);
+  boite.classList.add("touche");
+  redessiner();
+});
+cv.addEventListener("pointermove",e=>{
+  if(!traitEnCours) return;
+  const {w,h}=dims();
+  let pts=e.getCoalescedEvents?e.getCoalescedEvents():[];
+  if(!pts.length) pts=[e];
+  ctx.beginPath(); ctx.moveTo(dernier[0]*w,dernier[1]*h);
+  for(const p of pts){ const q=relatif(p); traitEnCours.push(q); ctx.lineTo(q[0]*w,q[1]*h); dernier=q; }
+  ctx.stroke();
+});
+function finTrait(){
+  if(!traitEnCours) return;
+  verrou=true;
+  boite.classList.add("verrou");
+  $("#dessin-ok").disabled=false;
+}
+cv.addEventListener("pointerup",finTrait);
+cv.addEventListener("pointercancel",finTrait);
+window.addEventListener("resize",()=>{ if(!$("#ecran-dessin").hidden) tailleToile(); });
+$("#dessin-ok").addEventListener("click",async()=>{
+  if(!traitEnCours) return;
+  const points=traitEnCours; traitEnCours=null;
+  $("#dessin-ok").disabled=true;
+  await partie.envoyer({type:"trait",points});
+});
+
+/* ---------- vote ---------- */
+function afficherVote(e){
+  const vivants=e.joueurs.filter(j=>j.vivant);
+  $("#vote-grille").innerHTML=vivants.map(j=>
+    `<button class="cible" type="button" data-cible="${j.id}" aria-pressed="false" ${j.id===maPlace?"disabled":""}>
+       <svg class="tok" viewBox="0 0 64 64" aria-hidden="true"><use href="#fighter"/></svg>
+       ${j.nom}${j.id===maPlace?" (toi)":""}</button>`).join("");
+  $$("#vote-grille .cible").forEach(b=>b.addEventListener("click",()=>{
+    choixVote=+b.dataset.cible;
+    $$("#vote-grille .cible").forEach(o=>o.setAttribute("aria-pressed",o===b));
+    $("#vote-ok").disabled=false;
+    $("#vote-ok span").textContent="Je vote contre "+b.textContent.trim();
+  }));
+  $("#vote-ok").disabled=true;
+  $("#vote-ok span").textContent="Je vote";
+  majJaugeVote(e);
+  ecran("vote");
+}
+function majJaugeVote(e){
+  $("#vote-barre").style.width=(e.nbVotes/e.nbVotants*100)+"%";
+  $("#vote-compte").textContent=`${e.nbVotes} sur ${e.nbVotants} ont voté`;
+}
+$("#vote-ok").addEventListener("click",async()=>{
+  if(choixVote===null) return;
+  $("#vote-ok").disabled=true; jaiVote=true;
+  await partie.envoyer({type:"vote",cible:choixVote});
+});
+
+/* ---------- indices ---------- */
+$("#indice-ok").addEventListener("click",async()=>{
+  $("#indice-ok").disabled=true;
+  await partie.envoyer({type:"indice"});
+  $("#indice-ok").disabled=false;
+});
+
+/* ---------- révélation, Mr. White, fin ---------- */
+$("#rev-ok").addEventListener("click",()=>partie.envoyer({type:"continuer"}));
+$("#mw-ok").addEventListener("click",()=>partie.envoyer({type:"deviner",texte:$("#mw-input").value}));
+$("#mw-passe").addEventListener("click",()=>partie.envoyer({type:"deviner",texte:""}));
+$("#mw-input").addEventListener("keydown",e=>{ if(e.key==="Enter") $("#mw-ok").click(); });
+$("#fin-rejouer").addEventListener("click",()=>partie.envoyer({type:"rejouer"}));
+$("#fin-salon").addEventListener("click",()=>location.href="setup.html");
+$("#quitter").addEventListener("click",()=>{ if(partie) partie.quitter(); });
+
+/* ====================================================================
+   L'AFFICHAGE : une seule fonction, pilotée par l'état public
+   ==================================================================== */
+async function rendre(e){
+  if(!e) return;
+  const nom=id=>{ const j=e.joueurs.find(x=>x.id===id); return j?j.nom:"?"; };
+  const moiJoueur=e.joueurs.find(j=>j.id===maPlace);
+  const enVie=moiJoueur?moiJoueur.vivant:false;
+
+  $("#tag-manche").textContent = e.phase==="fin" ? "Partie finie"
+    : e.toursParManche>1 ? `Manche ${e.manche} · tour ${e.tour}/${e.toursParManche}`
+    : `Manche ${e.manche}`;
+
+  if(e.phase!==phaseVue){ jaiVote=false; choixVote=null; phaseVue=e.phase; }
+
+  /* nouveau tirage (nouvelle partie ou duo rechangé) : ma carte a changé */
+  if(e.tirage!==tirageVu){ tirageVu=e.tirage; await partie.rechargerCarte(); }
+
+  switch(e.phase){
+    case "distribution": {
+      if(!partie.maCarte()) await partie.rechargerCarte();
+      if(e.vus.includes(maPlace))
+        attendre("Cartes distribuées","Chacun découvre son perso de son côté.","En attente des autres joueurs",e.vus.length,e.joueurs.length);
+      else afficherCarte(e);
+      break;
+    }
+    case "indices": {
+      const cestMoi=e.ordre[e.tourIdx]===maPlace;
+      $("#indices-titre").textContent = e.toursParManche>1
+        ? `Tour ${e.tour} sur ${e.toursParManche} : un indice chacun` : "Un indice chacun";
+      $("#indices-tour").textContent = cestMoi ? "À toi de parler !" : "Au tour de "+nom(e.ordre[e.tourIdx]);
+      $("#indices-tour").className = "au-tour"+(cestMoi?" moi":"");
+      $("#ordre-liste").innerHTML=e.ordre.map((id,i)=>{
+        const cls=i===e.tourIdx?"actuel":(i<e.tourIdx?"fait":"");
+        const etat=i===e.tourIdx?(id===maPlace?"à toi !":"en cours"):(i<e.tourIdx?"fait":"");
+        return `<li class="${cls}"><span class="n">${i+1}</span>${nom(id)}${id===maPlace?" (toi)":""}<span class="etat">${etat}</span></li>`;
+      }).join("");
+      $("#indice-ok").parentElement.hidden=!cestMoi;
+      $("#indices-attente").hidden=cestMoi;
+      $("#indices-qui").textContent=nom(e.ordre[e.tourIdx])+" donne son indice";
+      ecran("indices");
+      break;
+    }
+    case "dessin": {
+      const cestMoi=e.ordre[e.tourIdx]===maPlace;
+      $("#dessin-tour").textContent = cestMoi ? "À toi le trait !" : "Au tour de "+nom(e.ordre[e.tourIdx]);
+      $("#dessin-tour").className="au-tour"+(cestMoi?" moi":"");
+      $("#toile-tag").textContent = e.toursParManche>1
+        ? `Trait de ${nom(e.ordre[e.tourIdx])} · tour ${e.tour}/${e.toursParManche}`
+        : `Trait de ${nom(e.ordre[e.tourIdx])}`;
+      verrou=!cestMoi;
+      traitEnCours=null;
+      boite.classList.toggle("lecture",!cestMoi);
+      boite.classList.remove("verrou","touche");
+      $("#dessin-ok").disabled=true;
+      $("#dessin-ok").parentElement.hidden=!cestMoi;
+      $("#dessin-attente").hidden=cestMoi;
+      $("#dessin-qui").textContent=nom(e.ordre[e.tourIdx])+" pose son trait";
+      ecran("dessin");
+      tailleToile();
+      break;
+    }
+    case "vote": {
+      if(!enVie){ attendre("Vote en cours","Tu es éliminé : tu regardes.","En attente des votes",e.nbVotes,e.nbVotants); break; }
+      if(jaiVote){ attendre("Vote enregistré","Ton choix est parti. Personne ne sait pour qui tu as voté.","En attente des autres votes",e.nbVotes,e.nbVotants); break; }
+      afficherVote(e);
+      break;
+    }
+    case "revelation": {
+      const v=$("#rev-verdict");
+      if(e.elimine===null){
+        v.className="verdict neutre"; v.textContent="Personne !";
+        $("#rev-titre").textContent="Égalité";
+        $("#rev-texte").textContent="Personne n'est éliminé ce tour-ci. La partie continue.";
+      }else{
+        const j=e.joueurs.find(x=>x.id===e.elimine);
+        const estIntrus=j.role!=="civil";
+        v.className="verdict "+(estIntrus?"civils":"intrus");
+        v.textContent=estIntrus?"Bien joué !":"Raté !";
+        $("#rev-titre").textContent=`${j.nom} était ${ROLES[j.role]}`;
+        $("#rev-texte").textContent = j.role==="mrwhite"
+          ? (e.motDevine===false?"Mr. White s'est trompé.":"Mr. White est éliminé.")
+          : e.persoElimine ? `Son perso : ${e.persoElimine.nom} (${e.persoElimine.mangaNom||""}).`
+          : "";
+      }
+      $("#rev-hote").hidden=!estHote;
+      $("#rev-attente").hidden=estHote;
+      ecran("revelation");
+      break;
+    }
+    case "mrwhite": {
+      if(e.elimine===maPlace){ $("#mw-input").value=""; ecran("mrwhite"); }
+      else attendre("Mr. White démasqué",nom(e.elimine)+" était Mr. White. Il a droit à une tentative pour deviner le perso des civils.","En attente de sa réponse");
+      break;
+    }
+    case "fin": {
+      const civils=e.gagnant==="civils";
+      const v=$("#fin-verdict");
+      v.className="verdict "+(civils?"civils":"intrus");
+      v.textContent=civils?"Les civils gagnent !":"Les intrus gagnent !";
+      const civilsVivants=e.joueurs.filter(j=>j.vivant&&j.role==="civil").length;
+      $("#fin-titre").textContent = e.motDevine ? "Mr. White a deviné le perso des civils sur le fil !"
+        : civils ? "Tous les intrus sont démasqués."
+        : civilsVivants===0 ? "Plus aucun civil en jeu."
+        : "Il ne reste qu'un seul civil : les intrus l'emportent.";
+      $("#fin-duo").innerHTML = e.duo
+        ? `<span>Civils : <b>${e.duo.civils.nom}</b></span><span>Undercover : <b>${e.duo.infiltre.nom}</b></span>`+
+          (e.joueurs.some(j=>j.role==="mrwhite")?"<span>Mr. White : <b>aucun perso</b></span>":"")
+        : "";
+      $("#fin-recap").innerHTML=e.joueurs.map(j=>
+        `<div class="${j.vivant?"":"mort"}">
+           <svg class="tok" viewBox="0 0 64 64" aria-hidden="true" style="width:30px;height:30px;fill:${j.role==="civil"?"var(--sky)":j.role==="undercover"?"var(--red)":"#6c6370"};stroke:var(--ink);stroke-width:3.5;paint-order:stroke"><use href="#fighter"/></svg>
+           ${j.nom}${j.id===maPlace?" (toi)":""}<span class="role ${j.role}">${ROLES[j.role]}</span>
+         </div>`).join("");
+      $("#fin-hote").hidden=!estHote;
+      $("#fin-attente").hidden=estHote;
+      ecran("fin");
+      break;
+    }
+  }
+}
+</script>
+</body>
+</html>

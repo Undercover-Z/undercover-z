@@ -12,9 +12,15 @@
    A charger APRES config.js et la bibliotheque supabase-js.
    ==================================================================== */
 
+/* Pour tester plusieurs comptes sur le meme ordinateur : ajouter ?compte=2
+   a l'adresse ouvre une session separee dans cet onglet (sinon tous les
+   onglets d'un meme navigateur partagent le meme compte connecte). */
+const _compteTest = new URLSearchParams(location.search).get("compte");
+const _cleSession = "uz-auth" + (_compteTest ? "-" + _compteTest : "");
+
 const SB = (window.EN_LIGNE_PRET && window.supabase)
   ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      auth: { persistSession: true, autoRefreshToken: true, storageKey: "uz-auth" }
+      auth: { persistSession: true, autoRefreshToken: true, storageKey: _cleSession }
     })
   : null;
 
@@ -212,10 +218,14 @@ const Salons = {
     return error ? _ko(error) : { ok:true };
   },
 
-  /* Chaque joueur ne peut lire que SA carte : c'est la base qui l'impose */
+  /* Chaque joueur ne peut lire que SA carte : la base l'impose, et on
+     filtre aussi explicitement — ne jamais dependre d'une seule barriere. */
   async maCarte(code){
     if (!SB) return _horsLigne;
-    const { data, error } = await SB.from("cartes").select("role,perso").eq("salon", code).maybeSingle();
+    const s = await Compte.session();
+    if (!s) return { ok:false, erreur:"Personne n'est connecté." };
+    const { data, error } = await SB.from("cartes")
+      .select("role,perso").eq("salon", code).eq("joueur", s.user.id).maybeSingle();
     if (error) return _ko(error);
     return { ok:true, carte:data || null };
   },
